@@ -1,24 +1,26 @@
 Tipo:: #Proyecto  
 Materia:: [[Bases de Datos 2]]
-Fecha:: 2022-03-11T22:00
+Fecha:: 2022-03-15T22:00
 
 ---
 # Caso02
 ## Preguntas
-1. Si va a pasar las tablas 
-2. Que explique lo del set de postman 
-3. Que explique el segundo 
+
 ## Todo
-- [ ] Nuevo tipo deusuario
-	- [ ] Ciudadano 
-		- [ ] Se le asigna un cantón, por GPS
+- [ ] Actualizar la base con respecto a la clase del 02-03
+	- [x] Actualizar las tablas
+	- [ ] Actualizar los inserts
+		- [ ] SPs 
+- [x] Nuevo tipo deusuario
+	- [x] Ciudadano 
+		- [x] Se le asigna un cantón, por GPS
 - [ ] El ciudadano verá en una pantalla todos los entregables para su cantón por partido político
-- [ ] Calificación de entregables, (usuario 0 a 1) (base 0 a 10)
+- [x] Calificación de entregables ( 0 a 10)
 - [ ]  Endpoints
-	- [ ] Listar los cantones que recibirán entregables en los primeros 100 días de gobierno, pero que no recibirán nada en los últimos 100
+	- [ ] Listar los cantones que recibirán entregables en los primeros 100 días de gobierno, pero que no recibirán nada en los últimos 100 (David)
 		- [ ] Hacer uso según se necesite de except, intersect, set difference, datepart
 			- [ ] Cantón, cantidad de beneficios que recibirán en los primeros 100 días
-	- [ ] Para una misma acción en un mismo partido, sacar la densidad para todos los cantones que hay en los rangos de satisfacción del primer, segundo y tercer tercio
+	- [ ] Para una misma acción en un mismo partido, sacar la densidad para todos los cantones que hay en los rangos de satisfacción del primer, segundo y tercer tercio (Esteban)
 		- [ ] dense_rank, pivot tables
 			- [ ] Partido, acción, tercio1, tercio2, tercio3
 	- [ ] Listar por año, los 3 top meses del volumen de entregables por partido que estén relacionados a una lista de palabras proporcionadas
