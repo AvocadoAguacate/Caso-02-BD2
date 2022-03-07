@@ -22,7 +22,7 @@ BEGIN
 	INSERT INTO USER_X_TYPE (person_id, user_type_id) VALUES (@id_person, @id_type_user);
 END
 ;
-
+GO
 -- sp secundario para asignar el telefono
 CREATE PROCEDURE sp_assign_phone(
 	@name_person NVARCHAR(250),
@@ -41,7 +41,7 @@ BEGIN
 	INSERT INTO PHONE(phone, person_id) VALUES (@phone_person, @id_person);
 END
 ;
-
+GO
 -- sp secundario para asignar el gmail
 CREATE PROCEDURE sp_assign_email(
 	@name_person NVARCHAR(250),
@@ -60,7 +60,7 @@ BEGIN
 	INSERT INTO EMAIL(email, person_id) VALUES (@email_person, @id_person);
 END
 ;
-
+GO
 -- sp para insertar a la persona
 -- usara: nombvre, apellido, fecha nacimineto, id
 -- los que pueden ser null: canton (aleatorio), tipo, 1 telefono, 1 gmail
@@ -109,3 +109,4 @@ BEGIN
 		EXEC sp_assign_user_type @name_person, @last_name_person, @user_type_name;
 END
 ;
+GO
