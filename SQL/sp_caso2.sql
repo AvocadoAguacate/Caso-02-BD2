@@ -113,7 +113,7 @@ GO
 
 --SP insert deliverates 
 
-CREATE PROCEDURE sp_insert_deliverable
+CREATE PROCEDURE sp_insert_delivery
 	@action_id INT,
 	@plan_id INT, 
 	@canton_id INT,
