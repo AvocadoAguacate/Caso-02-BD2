@@ -111,7 +111,7 @@ END
 ;
 GO
 
---SP insert deliverates 
+--SP insert deliverables
 
 CREATE PROCEDURE sp_insert_delivery
 	@action_id INT,
@@ -129,6 +129,20 @@ BEGIN
 	VALUES (@action_id, @plan_id, @canton_id, @kpi_value, @kpi_type, @post_time, @author_id, @computer, HASHBYTES('SHA2_512', CONCAT(@action_id,@kpi_type,'arajo',@action_id,@computer)))
 END
 GO
+
+CREATE PROCEDURE sp_insert_deliverables_qualifications
+	@canton_id INT,
+	@delivery_id INT,
+	@person_id INT,
+	@qualification TINYINT 
+AS
+BEGIN
+	INSERT INTO DELIVERABLES_QUALIFICATIONS 
+	(canton_id, delivery_id, person_id, qualification, checksum)
+	VALUES (@canton_id, @delivery_id, @person_id, @qualification, HASHBYTES('SHA2_512', CONCAT(@canton_id,@canton_id,'arajo',@person_id,@qualification)))
+END 
+GO
+
 -- SERVERPROPERTY('MachineName')
 
 -- sp para asignar al manager de campa�a
