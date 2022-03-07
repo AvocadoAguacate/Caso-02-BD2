@@ -110,3 +110,64 @@ BEGIN
 END
 ;
 GO
+-- SERVERPROPERTY('MachineName')
+
+-- sp para asignar al manager de campaña
+CREATE PROCEDURE sp_create_maganer(
+	@name_person NVARCHAR(250),
+	@last_name_person NVARCHAR(250),
+	@the_party_name NVARCHAR(250),
+	@new_bio VARCHAR(1000),
+	@new_photo_url VARCHAR(150)
+)
+AS
+BEGIN
+	DECLARE @check VARBINARY(150);
+	DECLARE @id_person int;
+	DECLARE @id_party int;
+
+	SET @check = HASHBYTES('SHA2_512', CONCAT(@name_person, @last_name_person, @the_party_name, @new_photo_url));
+
+	SELECT @id_person = p.person_id
+		FROM PERSON as p
+		WHERE p.person_name = @name_person
+		AND p.lastname = @last_name_person;
+	SELECT @id_party = pa.party_id
+		FROM PARTY as pa
+		WHERE pa.party_name = @the_party_name;
+
+	INSERT INTO CAMPAIGN_MANAGERS (person_id, party_id, checksum, user_bio, photo_url)
+		VALUES (@id_person, @id_party, @check, @new_bio, @new_photo_url);
+END
+;
+GO
+
+CREATE PROCEDURE sp_update_manager(
+	@name_person NVARCHAR(250),
+	@last_name_person NVARCHAR(250),
+	@new_bio VARCHAR(1000),
+	@new_photo_url VARCHAR(150),
+	@the_party_name NVARCHAR(250)
+)
+AS
+BEGIN
+	DECLARE @check VARBINARY(150);
+	DECLARE @id_person int;
+	DECLARE @id_party int;
+
+	SET @check = HASHBYTES('SHA2_512', CONCAT(@name_person, @last_name_person, @the_party_name, @new_photo_url));
+
+	SELECT @id_person = p.person_id
+		FROM PERSON as p
+		WHERE p.person_name = @name_person
+		AND p.lastname = @last_name_person;
+	SELECT @id_party = pa.party_id
+		FROM PARTY as pa
+		WHERE pa.party_name = @the_party_name;
+
+	UPDATE CAMPAIGN_MANAGERS
+	SET person_id = @id_person, user_bio = @new_bio, photo_url = @new_photo_url, checksum = @check, lastUpdate = GETDATE()
+	WHERE party_id = @id_party;
+END
+;
+GO
