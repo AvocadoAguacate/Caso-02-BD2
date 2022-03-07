@@ -110,3 +110,22 @@ BEGIN
 END
 ;
 GO
+
+--SP insert deliverates 
+
+CREATE PROCEDURE sp_insert_deliverable
+	@action_id INT,
+	@plan_id INT, 
+	@canton_id INT,
+	@kpi_value INT,
+	@kpi_type INT,
+	@post_time DATE,
+	@author_id INT,
+	@computer VARCHAR(34)
+AS
+BEGIN
+	INSERT INTO DELIVERABLES 
+	(action_id, plan_id, canton_id, kpi_value, kpi_type, post_time, author_id, computer, checksum)
+	VALUES (@action_id, @plan_id, @canton_id, @kpi_value, @kpi_type, @post_time, @author_id, @computer, HASHBYTES('SHA2_512', CONCAT(@action_id,@kpi_type,'arajo',@action_id,@computer)))
+END
+GO
