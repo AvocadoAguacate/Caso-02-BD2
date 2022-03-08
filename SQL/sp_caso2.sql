@@ -171,6 +171,8 @@ BEGIN
 
 	INSERT INTO CAMPAIGN_MANAGERS (person_id, party_id, checksum, user_bio, photo_url)
 		VALUES (@id_person, @id_party, @check, @new_bio, @new_photo_url);
+
+	INSERT INTO USER_X_GROUP (person_id, party_id) VALUES (@id_person, @id_party);
 END
 ;
 GO
@@ -201,6 +203,8 @@ BEGIN
 	UPDATE CAMPAIGN_MANAGERS
 	SET person_id = @id_person, user_bio = @new_bio, photo_url = @new_photo_url, checksum = @check, lastUpdate = GETDATE()
 	WHERE party_id = @id_party;
+
+	INSERT INTO USER_X_GROUP (person_id, party_id) VALUES (@id_person, @id_party);
 END
 ;
 GO

@@ -22,3 +22,8 @@ EXEC sp_create_person 'Kelly', 'Zhang', '1/18/2003', 123456800, 'Fāqūs', 'kell
 EXEC sp_create_person 'Shane', 'Gardner', '1/19/2015', 123456803, 'Fāqūs', 'shane@gmail.com', 25500014, 'Ciudadano';
 EXEC sp_create_person 'Matthew', 'Harris', '1/20/2014', 123456804, 'Fāqūs', 'matthew@gmail.com', 25500016, 'Ciudadano';
 EXEC sp_create_person 'Janice', 'Moore', '1/16/2010', 123456805, 'Fāqūs', 'janice@gmail.com', 25500017, 'Ciudadano';
+ 
+EXEC sp_create_maganer 'Jessica', 'Armstrong', 'Russel, Rippin and Schmidt','bioExample***','http://dummyimage.com/178x100.png/cc0000/ffffff';
+EXEC sp_create_maganer 'Jessica', 'Armstrong', 'Kulas-Sanford','bioExample***','http://dummyimage.com/178x100.png/cc0000/ffffff';
+EXEC sp_create_maganer 'Jessica', 'Armstrong', 'Stoltenberg-Crooks','bioExample***','http://dummyimage.com/178x100.png/cc0000/ffffff';
+EXEC sp_create_maganer 'Jessica', 'Armstrong', 'Mitchell, Heller and Kirlin','bioExample***','http://dummyimage.com/178x100.png/cc0000/ffffff';
