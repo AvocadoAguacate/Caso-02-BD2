@@ -33,3 +33,25 @@ EXEC sp_create_party_plan 'Nuevo Plan del mañana 20XX', 'Rachel', 'Yates';
 EXEC sp_create_party_plan 'Plan por el futuro 20XX', 'Kelly', 'Zhang';
 EXEC sp_create_party_plan 'La Gran Roforma 20XX', 'Teresa', 'Ray';
 
+EXEC sp_create_action_plan 'Gran Plan del futuro 20XX', 'Action Plan 01', 'Esta accion tiene como objetivo general...';
+EXEC sp_create_action_plan 'Nuevo Plan del mañana 20XX', 'Action Plan 02', 'Esta accion tiene como objetivo general...';
+EXEC sp_create_action_plan 'Plan por el futuro 20XX', 'Action Plan 03', 'Esta accion tiene como objetivo general...';
+EXEC sp_create_action_plan 'La Gran Roforma 20XX', 'Action Plan 04', 'Esta accion tiene como objetivo general...';
+
+-- me da problemas para conseguir el action_id, no se si me estoy complicando
+EXEC sp_create_deliverable 'Action Plan 01', 'Jessica', 'Armstrong', 'Fāqūs', 23, 5, '5/20/2021';
+EXEC sp_create_deliverable 'Action Plan 01', 'Jessica', 'Armstrong', 'Fāqūs', 45, 2, '2/24/2021';
+EXEC sp_create_deliverable 'Action Plan 01', 'Jessica', 'Armstrong', 'Fāqūs', 52, 3, '6/12/2021';
+
+EXEC sp_create_deliverable 'Action Plan 02', 'Rachel', 'Yates', 'Fāqūs', 12, 1, '5/20/2021';
+EXEC sp_create_deliverable 'Action Plan 02', 'Rachel', 'Yates', 'Fāqūs', 65, 2, '2/24/2021';
+EXEC sp_create_deliverable 'Action Plan 02', 'Rachel', 'Yates', 'Fāqūs', 5, 4, '6/12/2021';
+
+EXEC sp_create_deliverable 'Action Plan 03', 'Kelly', 'Zhang', 'Fāqūs', 7, 4, '5/20/2021';
+EXEC sp_create_deliverable 'Action Plan 03', 'Kelly', 'Zhang', 'Fāqūs', 15, 3, '2/24/2021';
+EXEC sp_create_deliverable 'Action Plan 03', 'Kelly', 'Zhang', 'Fāqūs', 32, 2, '6/12/2021';
+
+EXEC sp_create_deliverable 'Action Plan 04', 'Teresa', 'Ray', 'Fāqūs', 42, 1, '5/20/2021';
+EXEC sp_create_deliverable 'Action Plan 04', 'Teresa', 'Ray', 'Fāqūs', 54, 5, '2/24/2021';
+EXEC sp_create_deliverable 'Action Plan 04', 'Teresa', 'Ray', 'Fāqūs', 12, 2, '6/12/2021';
+		

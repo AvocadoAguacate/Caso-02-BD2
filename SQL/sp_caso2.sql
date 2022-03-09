@@ -230,3 +230,99 @@ BEGIN
 	INSERT INTO PLAN_PARTY(title, author_id, checksum) VALUES(@new_title, @id_manager, @check);
 END
 ;
+
+CREATE PROCEDURE sp_create_action_plan(
+	@title_plan NVARCHAR(200),
+	@title_action NVARCHAR(100),
+	@action_descr NVARCHAR(720)
+)
+AS
+BEGIN
+	DECLARE @check VARBINARY(150);
+	DECLARE @id_plan int;
+
+	SET @check = HASHBYTES('SHA2_512', CONCAT(@title_plan, @title_action, @action_descr));
+
+	SELECT @id_plan = pp.plan_id
+		FROM PLAN_PARTY as pp
+		WHERE pp.title = @title_plan;
+
+	INSERT INTO ACTION_PLAN(plan_id, action_title, action_description, checksum) VALUES(@id_plan, @title_action, @action_descr, @check);
+END
+;
+
+ALTER PROCEDURE sp_create_deliverable(
+	@title_action NVARCHAR(100),
+	@name_author NVARCHAR(250),
+	@last_name_author NVARCHAR(250),
+	@canton_name NVARCHAR(250),
+	@new_kpi_value INT,
+	@new_kpi_type INT,
+	@new_post_time DATE
+)
+AS
+BEGIN
+	DECLARE @id_action int;
+	DECLARE @id_plan int;
+	DECLARE @id_canton_deliv int;
+	DECLARE @id_person int;
+	DECLARE @check VARBINARY(150);
+	DECLARE @computer_name VARCHAR(34);
+
+	SET @check = HASHBYTES('SHA2_512', CONCAT(@title_action,@name_author, @last_name_author, @canton_name, @new_kpi_value));
+	SET @computer_name = CONVERT(varchar(34), SERVERPROPERTY('MachineName'));
+
+	SELECT @id_person = cm.campain_manager_id
+		FROM PERSON as p
+		INNER JOIN CAMPAIGN_MANAGERS as cm ON p.person_id = cm.campain_manager_id
+		WHERE p.person_name = @name_author
+		AND p.lastname = @last_name_author;
+
+	SELECT @id_action = ap.action_id, @id_plan = ap.plan_id
+		FROM ACTION_PLAN as ap
+		INNER JOIN PLAN_PARTY as pp ON pp.plan_id = ap.plan_id
+		INNER JOIN CAMPAIGN_MANAGERS as cm ON cm.campain_manager_id = pp.author_id
+		INNER JOIN PERSON as p ON p.person_id = cm.person_id
+		WHERE ap.action_title = @title_action
+		AND cm.campain_manager_id = @id_person;
+
+	SELECT @id_canton_deliv = canton_id
+		FROM CANTON as c
+		WHERE c.canton_name = @canton_name;
+
+	INSERT INTO DELIVERABLES(action_id, plan_id, canton_id, kpi_value, kpi_type, post_time, author_id, computer, checksum)
+		VALUES (@id_action, @id_plan, @id_canton_deliv, @new_kpi_value, @new_kpi_type,@new_post_time, @id_person, @computer_name , @check );
+
+END
+;
+
+CREATE PROCEDURE sp_qualify_deliverable(
+	@name_author NVARCHAR(250),
+	@last_name_author NVARCHAR(250),
+	@id_delivery int,
+	@canton_name NVARCHAR(250),
+	@the_qualification TINYINT = 1
+)
+AS
+BEGIN
+	DECLARE @id_canton_deliv int;
+	DECLARE @id_person int;
+	DECLARE @check VARBINARY(150);
+	DECLARE @computer_name VARCHAR(34);
+
+	SET @check = HASHBYTES('SHA2_512', CONCAT(@name_author, @last_name_author, @canton_name,@the_qualification, @id_delivery ));
+
+	SET @computer_name = CONVERT(varchar(34), SERVERPROPERTY('MachineName'));
+
+	SELECT @id_canton_deliv = canton_id
+		FROM CANTON as c
+		WHERE c.canton_name = @canton_name;
+
+	SELECT @id_person = p.person_id
+		FROM PERSON as p
+		WHERE p.person_name = @name_author
+		AND p.lastname = @last_name_author;
+
+	INSERT INTO DELIVERABLES_QUALIFICATIONS(canton_id, delivery_id, person_id, qualification, checksum, computer)
+		VALUES(@id_canton_deliv, @id_delivery, @id_person, @the_qualification, @check, @computer_name );
+END;
