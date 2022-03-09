@@ -24,6 +24,12 @@ EXEC sp_create_person 'Matthew', 'Harris', '1/20/2014', 123456804, 'Fāqūs', 'm
 EXEC sp_create_person 'Janice', 'Moore', '1/16/2010', 123456805, 'Fāqūs', 'janice@gmail.com', 25500017, 'Ciudadano';
  
 EXEC sp_create_maganer 'Jessica', 'Armstrong', 'Russel, Rippin and Schmidt','bioExample***','http://dummyimage.com/178x100.png/cc0000/ffffff';
-EXEC sp_create_maganer 'Jessica', 'Armstrong', 'Kulas-Sanford','bioExample***','http://dummyimage.com/178x100.png/cc0000/ffffff';
-EXEC sp_create_maganer 'Jessica', 'Armstrong', 'Stoltenberg-Crooks','bioExample***','http://dummyimage.com/178x100.png/cc0000/ffffff';
-EXEC sp_create_maganer 'Jessica', 'Armstrong', 'Mitchell, Heller and Kirlin','bioExample***','http://dummyimage.com/178x100.png/cc0000/ffffff';
+EXEC sp_create_maganer 'Rachel', 'Yates', 'Kulas-Sanford','bioExample***','http://dummyimage.com/178x100.png/cc0000/ffffff';
+EXEC sp_create_maganer 'Kelly', 'Zhang', 'Stoltenberg-Crooks','bioExample***','http://dummyimage.com/178x100.png/cc0000/ffffff';
+EXEC sp_create_maganer 'Teresa', 'Ray', 'Mitchell, Heller and Kirlin','bioExample***','http://dummyimage.com/178x100.png/cc0000/ffffff';
+
+EXEC sp_create_party_plan 'Gran Plan del futuro 20XX', 'Jessica', 'Armstrong';
+EXEC sp_create_party_plan 'Nuevo Plan del mañana 20XX', 'Rachel', 'Yates';
+EXEC sp_create_party_plan 'Plan por el futuro 20XX', 'Kelly', 'Zhang';
+EXEC sp_create_party_plan 'La Gran Roforma 20XX', 'Teresa', 'Ray';
+

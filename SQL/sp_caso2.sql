@@ -208,3 +208,25 @@ BEGIN
 END
 ;
 GO
+
+CREATE PROCEDURE sp_create_party_plan(
+	@new_title NVARCHAR(200),
+	@name_author NVARCHAR(250),
+	@last_name_author NVARCHAR(250)
+)
+AS
+BEGIN
+	DECLARE @check VARBINARY(150);
+	DECLARE @id_manager int;
+
+	SET @check = HASHBYTES('SHA2_512', CONCAT(@new_title, @name_author, @last_name_author));
+
+	SELECT @id_manager = cm.campain_manager_id
+		FROM PERSON as p
+		INNER JOIN CAMPAIGN_MANAGERS as cm ON p.person_id = cm.person_id
+		WHERE p.person_name = @name_author
+		AND p.lastname = @last_name_author;
+
+	INSERT INTO PLAN_PARTY(title, author_id, checksum) VALUES(@new_title, @id_manager, @check);
+END
+;
