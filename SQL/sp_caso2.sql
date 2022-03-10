@@ -134,12 +134,13 @@ CREATE PROCEDURE sp_insert_deliverables_qualifications
 	@canton_id INT,
 	@delivery_id INT,
 	@person_id INT,
-	@qualification TINYINT 
+	@qualification TINYINT,
+	@computer_name varchar(34)
 AS
 BEGIN
 	INSERT INTO DELIVERABLES_QUALIFICATIONS 
-	(canton_id, delivery_id, person_id, qualification, checksum)
-	VALUES (@canton_id, @delivery_id, @person_id, @qualification, HASHBYTES('SHA2_512', CONCAT(@canton_id,@canton_id,'arajo',@person_id,@qualification)))
+	(canton_id, delivery_id, person_id, qualification, checksum, computer)
+	VALUES (@canton_id, @delivery_id, @person_id, @qualification, HASHBYTES('SHA2_512', CONCAT(@canton_id,@canton_id,'arajo',@person_id,@qualification)), @computer_name)
 END 
 GO
 

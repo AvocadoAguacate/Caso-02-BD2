@@ -140,20 +140,55 @@ EXEC sp_insert_delivery 1, 2, 30, 632, 6, '7/21/2024', 3, 'Cat, tiger';
 EXEC sp_insert_delivery 2, 2, 9, 570, 20, '3/4/2022', 1, 'Anteater, australian spiny';
 EXEC sp_insert_delivery 3, 1, 39, 893, 9, '12/6/2022', 3, 'Crab-eating fox';
 
--- me da problemas para conseguir el action_id, no se si me estoy complicando
-EXEC sp_create_deliverable 'Action Plan 01', 'Jessica', 'Armstrong', 'Fāqūs', 23, 5, '5/20/2021';
-EXEC sp_create_deliverable 'Action Plan 01', 'Jessica', 'Armstrong', 'Fāqūs', 45, 2, '2/24/2021';
-EXEC sp_create_deliverable 'Action Plan 01', 'Jessica', 'Armstrong', 'Fāqūs', 52, 3, '6/12/2021';
+-- solo las primeros 5 entregables tendrán calificaciones 
 
-EXEC sp_create_deliverable 'Action Plan 02', 'Rachel', 'Yates', 'Fāqūs', 12, 1, '5/20/2021';
-EXEC sp_create_deliverable 'Action Plan 02', 'Rachel', 'Yates', 'Fāqūs', 65, 2, '2/24/2021';
-EXEC sp_create_deliverable 'Action Plan 02', 'Rachel', 'Yates', 'Fāqūs', 5, 4, '6/12/2021';
-
-EXEC sp_create_deliverable 'Action Plan 03', 'Kelly', 'Zhang', 'Fāqūs', 7, 4, '5/20/2021';
-EXEC sp_create_deliverable 'Action Plan 03', 'Kelly', 'Zhang', 'Fāqūs', 15, 3, '2/24/2021';
-EXEC sp_create_deliverable 'Action Plan 03', 'Kelly', 'Zhang', 'Fāqūs', 32, 2, '6/12/2021';
-
-EXEC sp_create_deliverable 'Action Plan 04', 'Teresa', 'Ray', 'Fāqūs', 42, 1, '5/20/2021';
-EXEC sp_create_deliverable 'Action Plan 04', 'Teresa', 'Ray', 'Fāqūs', 54, 5, '2/24/2021';
-EXEC sp_create_deliverable 'Action Plan 04', 'Teresa', 'Ray', 'Fāqūs', 12, 2, '6/12/2021';
-		
+EXEC sp_insert_deliverables_qualifications 29, 4, 5, 93, 'Kongoni';
+EXEC sp_insert_deliverables_qualifications 28, 3, 4, 74, 'Penguin, magellanic';
+EXEC sp_insert_deliverables_qualifications 47, 3, 8, 20, 'American racer';
+EXEC sp_insert_deliverables_qualifications 27, 2, 3, 93, 'Civet cat';
+EXEC sp_insert_deliverables_qualifications 38, 3, 4, 46, 'Western grey kangaroo';
+EXEC sp_insert_deliverables_qualifications 13, 3, 9, 74, 'Macaw, blue and yellow';
+EXEC sp_insert_deliverables_qualifications 33, 2, 6, 49, 'Royal tern';
+EXEC sp_insert_deliverables_qualifications 49, 3, 12, 88, 'Giant girdled lizard';
+EXEC sp_insert_deliverables_qualifications 11, 5, 11, 78, 'American crow';
+EXEC sp_insert_deliverables_qualifications 12, 3, 2, 66, 'Brown lemur';
+EXEC sp_insert_deliverables_qualifications 23, 3, 9, 57, 'Indian tree pie';
+EXEC sp_insert_deliverables_qualifications 30, 4, 4, 89, 'Crane, black-crowned';
+EXEC sp_insert_deliverables_qualifications 42, 3, 11, 13, 'Eastern quoll';
+EXEC sp_insert_deliverables_qualifications 24, 1, 11, 49, 'Elegant crested tinamou';
+EXEC sp_insert_deliverables_qualifications 19, 5, 4, 63, 'Cat, kaffir';
+EXEC sp_insert_deliverables_qualifications 49, 3, 16, 90, 'Eastern diamondback rattlesnake';
+EXEC sp_insert_deliverables_qualifications 46, 4, 6, 20, 'Anteater, australian spiny';
+EXEC sp_insert_deliverables_qualifications 35, 4, 2, 94, 'Vulture, oriental white-backed';
+EXEC sp_insert_deliverables_qualifications 23, 1, 13, 13, 'Spectacled caiman';
+EXEC sp_insert_deliverables_qualifications 22, 2, 13, 66, 'Palm squirrel';
+EXEC sp_insert_deliverables_qualifications 5, 3, 14, 18, 'Hyena, striped';
+EXEC sp_insert_deliverables_qualifications 8, 1, 15, 66, 'Giant anteater';
+EXEC sp_insert_deliverables_qualifications 37, 3, 1, 13, 'Cape wild cat';
+EXEC sp_insert_deliverables_qualifications 44, 5, 13, 40, 'Deer, swamp';
+EXEC sp_insert_deliverables_qualifications 35, 5, 13, 46, 'Kiskadee, great';
+EXEC sp_insert_deliverables_qualifications 26, 3, 9, 87, 'Crab, sally lightfoot';
+EXEC sp_insert_deliverables_qualifications 17, 2, 14, 64, 'Gecko, tokay';
+EXEC sp_insert_deliverables_qualifications 29, 3, 5, 92, 'Alligator, american';
+EXEC sp_insert_deliverables_qualifications 44, 5, 6, 26, 'Common eland';
+EXEC sp_insert_deliverables_qualifications 5, 2, 6, 12, 'Blue shark';
+EXEC sp_insert_deliverables_qualifications 11, 2, 2, 29, 'Black-fronted bulbul';
+EXEC sp_insert_deliverables_qualifications 42, 1, 7, 6, 'South American sea lion';
+EXEC sp_insert_deliverables_qualifications 1, 2, 3, 2, 'Stork, openbill';
+EXEC sp_insert_deliverables_qualifications 1, 4, 10, 32, 'Squirrel, eastern fox';
+EXEC sp_insert_deliverables_qualifications 3, 5, 3, 78, 'Jaguarundi';
+EXEC sp_insert_deliverables_qualifications 2, 4, 4, 3, 'Greater rhea';
+EXEC sp_insert_deliverables_qualifications 13, 5, 5, 87, 'Hornbill, southern ground';
+EXEC sp_insert_deliverables_qualifications 49, 5, 5, 13, 'Marshbird, brown and yellow';
+EXEC sp_insert_deliverables_qualifications 20, 4, 14, 20, 'Gecko, barking';
+EXEC sp_insert_deliverables_qualifications 15, 3, 3, 90, 'Hanuman langur';
+EXEC sp_insert_deliverables_qualifications 18, 1, 7, 91, 'Great white pelican';
+EXEC sp_insert_deliverables_qualifications 30, 5, 9, 11, 'Yellow-brown sungazer';
+EXEC sp_insert_deliverables_qualifications 22, 4, 11, 1, 'Ass, asiatic wild';
+EXEC sp_insert_deliverables_qualifications 36, 2, 2, 19, 'Yellow baboon';
+EXEC sp_insert_deliverables_qualifications 32, 1, 15, 48, 'White-browed sparrow weaver';
+EXEC sp_insert_deliverables_qualifications 2, 5, 7, 61, 'Cliffchat, mocking';
+EXEC sp_insert_deliverables_qualifications 50, 5, 1, 38, 'Porcupine, indian';
+EXEC sp_insert_deliverables_qualifications 15, 3, 15, 68, 'Eastern fox squirrel';
+EXEC sp_insert_deliverables_qualifications 23, 2, 11, 87, 'Porcupine, crested';
+EXEC sp_insert_deliverables_qualifications 9, 5, 9, 38, 'Tammar wallaby';
