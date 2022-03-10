@@ -173,6 +173,8 @@ BEGIN
 		VALUES (@id_person, @id_party, @check, @new_bio, @new_photo_url);
 
 	INSERT INTO USER_X_GROUP (person_id, party_id) VALUES (@id_person, @id_party);
+
+	INSERT INTO USER_X_TYPE (person_id, user_type_id) VALUES (@id_person, 1);
 END
 ;
 GO
@@ -230,7 +232,7 @@ BEGIN
 	INSERT INTO PLAN_PARTY(title, author_id, checksum) VALUES(@new_title, @id_manager, @check);
 END
 ;
-
+GO
 CREATE PROCEDURE sp_create_action_plan(
 	@title_plan NVARCHAR(200),
 	@title_action NVARCHAR(100),
@@ -250,8 +252,8 @@ BEGIN
 	INSERT INTO ACTION_PLAN(plan_id, action_title, action_description, checksum) VALUES(@id_plan, @title_action, @action_descr, @check);
 END
 ;
-
-ALTER PROCEDURE sp_create_deliverable(
+GO
+CREATE PROCEDURE sp_create_deliverable(
 	@title_action NVARCHAR(100),
 	@name_author NVARCHAR(250),
 	@last_name_author NVARCHAR(250),
@@ -295,7 +297,7 @@ BEGIN
 
 END
 ;
-
+GO
 CREATE PROCEDURE sp_qualify_deliverable(
 	@name_author NVARCHAR(250),
 	@last_name_author NVARCHAR(250),
@@ -326,3 +328,4 @@ BEGIN
 	INSERT INTO DELIVERABLES_QUALIFICATIONS(canton_id, delivery_id, person_id, qualification, checksum, computer)
 		VALUES(@id_canton_deliv, @id_delivery, @id_person, @the_qualification, @check, @computer_name );
 END;
+GO
