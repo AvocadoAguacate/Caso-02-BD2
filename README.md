@@ -3,14 +3,14 @@ Materia:: [[Bases de Datos 2]]
 Fecha:: 2022-03-15T22:00
 
 ---
-# Caso02
+## Caso02
 ## Preguntas
 
 ## Todo
-- [ ] Actualizar la base con respecto a la clase del 02-03
+- [x] Actualizar la base con respecto a la clase del 02-03
 	- [x] Actualizar las tablas
-	- [ ] Actualizar los inserts
-		- [ ] SPs 
+	- [x] Actualizar los inserts
+		- [x] SPs 
 - [x] Nuevo tipo deusuario
 	- [x] Ciudadano 
 		- [x] Se le asigna un cantón, por GPS
@@ -35,3 +35,4 @@ Fecha:: 2022-03-15T22:00
 	- [ ] Dada un usuario ciudadano y un plan de un partido, recibir una lista de entregables para su cantón y las respectivas calificaciones de satisfacción para ser guardadas en forma transaccional.
 		- [ ] Table value parameters, transactions, read committed, transaction error handling
 			- [ ] 200 OK
+
