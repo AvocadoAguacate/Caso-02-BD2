@@ -1,5 +1,5 @@
 import { Logger } from '../common'
-
+var Request = require('tedious').Request;
 
 export class articles_data {
     private log: Logger;
