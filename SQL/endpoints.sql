@@ -6,18 +6,14 @@ GO
 -- salida: Partido x Canton x cantidad de beneficios
 CREATE PROCEDURE sp_endpoint01(
 	@party_id INT,
-	@canton_id INT
+	@canton_id INT,
+	@first_day date,
+	@last_day date
 )
 AS
 BEGIN
-	DECLARE @first_day date;
-	DECLARE @last_day date;
-
-	SELECT @first_day = MIN(post_time) FROM DELIVERABLES;
-	SELECT @last_day = MAX(post_time) FROM DELIVERABLES;
-
 	-- todo lo de la izquierda que no este en la derecha
-	SELECT p.party_name as 'Partido', c.canton_name as 'Canton' ,COUNT(d.delivery_id) as 'Cantidad de Beneficios'
+	SELECT TOP(100) p.party_name as 'Partido', c.canton_name as 'Canton' ,COUNT(d.delivery_id) as 'Cantidad de Beneficios'
 	FROM DELIVERABLES as d
 	INNER JOIN CANTON as c ON d.canton_id = c.canton_id
 	INNER JOIN CAMPAIGN_MANAGERS as cm ON d.action_id = cm.campain_manager_id
@@ -27,7 +23,7 @@ BEGIN
 	AND c.canton_id = ISNULL(@canton_id, c.canton_id)
 	GROUP BY p.party_name, c.canton_name
 	EXCEPT
-	SELECT p.party_name as 'Partido', c.canton_name as 'Canton' ,COUNT(d.delivery_id) as 'Cantidad de Beneficios'
+	SELECT TOP(100) p.party_name as 'Partido', c.canton_name as 'Canton' ,COUNT(d.delivery_id) as 'Cantidad de Beneficios'
 	FROM DELIVERABLES as d
 	INNER JOIN CANTON as c ON d.canton_id = c.canton_id
 	INNER JOIN CAMPAIGN_MANAGERS as cm ON d.action_id = cm.campain_manager_id
@@ -72,4 +68,35 @@ AS
       FOR Tercio  IN ([0],[1],[2])
     ) AS PIVOT_TABLE;
   END 
-GO 
+GO
+-- Endpoint #03
+-- Listar por año, los 3 top meses del volumen de entregables por 
+-- partido que estén relacionados a una lista de palabras proporcionadas
+--- Salida: Partido, año, nombre del mes, % de entregables, position
+
+--** Endpoint #04
+-- Ranking por partido con mayores niveles de satisfacción en su plan en forma global pero 
+-- cuya acción tenga el mismo comportamiento para todos los cantones donde habrá un 
+-- entregable. Se consideran aceptables al top 30% de las calificaciones de satisfacción.
+-- Salida: Partido, % aceptación, posición, nota máxima obtenida
+CREATE PROCEDURE sp_endpoint04(
+	@party_id INT,
+	@first_day date,
+	@last_day date
+)
+AS
+BEGIN
+
+END
+;
+GO
+
+-- Endpoint #05
+-- Reporte de niveles de satisfacción por partido por cantón ordenados por mayor calificación a
+-- menor y por partido. Finalmente agregando un sumarizado por partido de los mismos porcentajes. 
+-- Salida: Partido, cantón, % insatisfechos, % medianamente satisfechos, % de muy satisfechos, sumarizado
+
+-- Endpont #06
+-- Dada un usuario ciudadano y un plan de un partido, recibir una lista de entregables para su 
+-- cantón y las respectivas calificaciones de satisfacción para ser guardadas en forma transaccional. 
+-- Salida: 200 OK
