@@ -95,6 +95,30 @@ GO
 -- Reporte de niveles de satisfacción por partido por cantón ordenados por mayor calificación a
 -- menor y por partido. Finalmente agregando un sumarizado por partido de los mismos porcentajes. 
 -- Salida: Partido, cantón, % insatisfechos, % medianamente satisfechos, % de muy satisfechos, sumarizado
+ALTER PROCEDURE sp_endpoint05(
+	@party_id INT,
+	@first_day date,
+	@last_day date
+)
+AS
+BEGIN
+	SELECT p.party_name as 'Partido: ', c.canton_name as 'Canton: ',
+		COUNT( CASE WHEN dq.qualification <= 33 THEN 1 ELSE 0 END) as '% Insatisfecho: ',
+		COUNT( CASE WHEN dq.qualification >= 34 AND dq.qualification <= 66 THEN 1 ELSE 0 END) as '% Medianamente Satisfecho: ',
+		COUNT( CASE WHEN dq.qualification >= 67 THEN 1 ELSE 0 END) as '% Satisfecho: '
+	FROM DELIVERABLES_QUALIFICATIONS as dq
+	INNER JOIN DELIVERABLES as d ON dq.delivery_id = d.delivery_id
+	INNER JOIN CANTON as c ON dq.canton_id = c.canton_id
+	INNER JOIN CAMPAIGN_MANAGERS as cm ON d.author_id = cm.campain_manager_id
+	INNER JOIN PARTY as p ON cm.party_id = p.party_id
+	WHERE p.party_id = ISNULL(@party_id, p.party_id)
+	AND dq.post_time BETWEEN @first_day AND @last_day
+	GROUP BY ROLLUP(p.party_name, c.canton_name)
+END
+;
+GO
+
+Exec sp_endpoint05 1, '2022-03-12', '2022-03-15';
 
 -- Endpont #06
 -- Dada un usuario ciudadano y un plan de un partido, recibir una lista de entregables para su 
