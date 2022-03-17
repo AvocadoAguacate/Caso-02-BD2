@@ -12,6 +12,7 @@
   "author": "rnunez",
   "license": "ISC",
   "dependencies": {
+    "@types/mssql": "^7.1.5",
     "express": "4.17.1",
     "mssql": "^8.0.2"
   },

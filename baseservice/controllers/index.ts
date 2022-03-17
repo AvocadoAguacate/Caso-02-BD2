@@ -1,2 +1,2 @@
 export { ArticleController } from './articlescontroller'
-export { TestController } from './testcontroller'
+export { ReportsController } from './reportscontroller'
