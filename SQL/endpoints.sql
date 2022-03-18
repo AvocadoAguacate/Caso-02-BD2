@@ -111,6 +111,8 @@ WHERE p.party_id = ISNULL(@party_id, p.party_id)
 AND dq.post_time BETWEEN @first_day AND @last_day
 AND dq.qualification <= 33
 GROUP BY ROLLUP(p.party_name, c.canton_name)
+
+COUNT( CASE WHEN dq.qualification <= 33 THEN 1 END) * 100 / @total_qualifications
 */
 ALTER PROCEDURE sp_endpoint05(
 	@party_id INT,
@@ -126,9 +128,9 @@ BEGIN
 	WHERE dq.post_time BETWEEN @first_day AND @last_day;
 
 	SELECT p.party_name as 'Partido: ', c.canton_name as 'Canton: ',
-		COUNT( CASE WHEN dq.qualification <= 33 THEN 1 ELSE 0 END) * 100 / @total_qualifications as '% Insatisfecho: ',
-		COUNT( CASE WHEN dq.qualification >= 34 AND dq.qualification <= 66 THEN 1 ELSE 0 END)  * 100 / @total_qualifications as '% Medianamente Satisfecho: ',
-		COUNT( CASE WHEN dq.qualification >= 67 THEN 1 ELSE 0 END) * 100 / @total_qualifications as '% Satisfecho: '
+		COUNT( CASE WHEN dq.qualification <= 33 THEN 1 END) * 100 / @total_qualifications as '% Insatisfecho: ',
+		COUNT( CASE WHEN dq.qualification >= 34 AND dq.qualification <= 66 THEN 1 END) * 100 / @total_qualifications  as '% Medianamente Satisfecho: ',
+		COUNT( CASE WHEN dq.qualification >= 67 THEN 1 END) * 100 / @total_qualifications as '% Satisfecho: '
 	FROM DELIVERABLES_QUALIFICATIONS as dq
 	INNER JOIN DELIVERABLES as d ON dq.delivery_id = d.delivery_id
 	INNER JOIN CANTON as c ON dq.canton_id = c.canton_id
@@ -141,7 +143,7 @@ END
 ;
 GO
 
-Exec sp_endpoint05 1, '2022-03-12', '2022-03-15';
+Exec sp_endpoint05 null, '2022-03-12', '2022-03-15';
 
 -- Endpont #06
 -- Dada un usuario ciudadano y un plan de un partido, recibir una lista de entregables para su 
