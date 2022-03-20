@@ -79,41 +79,59 @@ GO
 -- cuya acción tenga el mismo comportamiento para todos los cantones donde habrá un 
 -- entregable. Se consideran aceptables al top 30% de las calificaciones de satisfacción.
 -- Salida: Partido, % aceptación, posición, nota máxima obtenida
-CREATE PROCEDURE sp_endpoint04(
+ALTER PROCEDURE sp_endpoint04(
 	@party_id INT,
 	@first_day date,
 	@last_day date
 )
 AS
 BEGIN
+	DECLARE @total_qualifications INT;
 
+	SELECT @total_qualifications = COUNT( dq.qualification )
+	FROM DELIVERABLES_QUALIFICATIONS as dq
+	WHERE dq.post_time BETWEEN @first_day AND @last_day;
+
+	/* ranking por partido por nivel de satisfaccion*/
+	SELECT TOP(30) p.party_name as 'Partido: ',
+		COUNT( CASE WHEN dq.qualification > 60 THEN 1 END) * 100 / @total_qualifications as '% Satisfecho: ',
+		COUNT( d.kpi_type ) as 'cantidad de tipos de acciones: ',
+		/* MAX ( dq.qualification ) / 10 as 'Nota Maxima: ', por ahora no porque las mescla */
+		RANK () OVER ( ORDER BY p.party_name DESC ) AS 'Ranking No: '
+	FROM DELIVERABLES_QUALIFICATIONS as dq
+	INNER JOIN DELIVERABLES as d ON dq.delivery_id = d.delivery_id
+	INNER JOIN CANTON as c ON dq.canton_id = c.canton_id
+	INNER JOIN CAMPAIGN_MANAGERS as cm ON d.author_id = cm.campain_manager_id
+	INNER JOIN PARTY as p ON cm.party_id = p.party_id
+	WHERE p.party_id = ISNULL(@party_id, p.party_id)
+	AND dq.post_time BETWEEN @first_day AND @last_day
+	GROUP BY p.party_name
+	INTERSECT
+	SELECT TOP(30) p.party_name as 'Partido: ', /* acciones con el mismo comportamiento en todos los cantones donde habran entregables */
+		COUNT( CASE WHEN dq.qualification > 60 THEN 1 END) * 100 / @total_qualifications as '% Satisfecho: ',
+		COUNT( d.kpi_type ) as 'cantidad de tipos de acciones: ',
+		RANK () OVER ( ORDER BY p.party_name DESC ) AS 'Ranking No: '
+	FROM DELIVERABLES_QUALIFICATIONS as dq
+	INNER JOIN DELIVERABLES as d ON dq.delivery_id = d.delivery_id
+	INNER JOIN CANTON as c ON dq.canton_id = c.canton_id
+	INNER JOIN CAMPAIGN_MANAGERS as cm ON d.author_id = cm.campain_manager_id
+	INNER JOIN PARTY as p ON cm.party_id = p.party_id
+	WHERE p.party_id = ISNULL(@party_id, p.party_id)
+	AND dq.post_time BETWEEN @first_day AND @last_day
+	AND c.canton_id IS NOT NULL
+	GROUP BY p.party_name
+
+	/*usar INTERSECT para tener los datos iguales en ambos select*/
 END
 ;
 GO
+Exec sp_endpoint04 null, '2022-03-12', '2022-03-15';
 
 -- Endpoint #05
 -- Reporte de niveles de satisfacción por partido por cantón ordenados por mayor calificación a
 -- menor y por partido. Finalmente agregando un sumarizado por partido de los mismos porcentajes. 
 -- Salida: Partido, cantón, % insatisfechos, % medianamente satisfechos, % de muy satisfechos, sumarizado
-/*
-COUNT( CASE WHEN dq.qualification <= 33 THEN 1 ELSE 0 END) as '% Insatisfecho: ',
-COUNT( CASE WHEN dq.qualification >= 34 AND dq.qualification <= 66 THEN 1 ELSE 0 END) as '% Medianamente Satisfecho: ',
-COUNT( CASE WHEN dq.qualification >= 67 THEN 1 ELSE 0 END) as '% Satisfecho: '
 
-SELECT p.party_name as 'Partido: ', c.canton_name as 'Canton: ',
-	COUNT( dq.qualification ) as '% Insatisfecho: '
-FROM DELIVERABLES_QUALIFICATIONS as dq
-INNER JOIN DELIVERABLES as d ON dq.delivery_id = d.delivery_id
-INNER JOIN CANTON as c ON dq.canton_id = c.canton_id
-INNER JOIN CAMPAIGN_MANAGERS as cm ON d.author_id = cm.campain_manager_id
-INNER JOIN PARTY as p ON cm.party_id = p.party_id
-WHERE p.party_id = ISNULL(@party_id, p.party_id)
-AND dq.post_time BETWEEN @first_day AND @last_day
-AND dq.qualification <= 33
-GROUP BY ROLLUP(p.party_name, c.canton_name)
-
-COUNT( CASE WHEN dq.qualification <= 33 THEN 1 END) * 100 / @total_qualifications
-*/
 ALTER PROCEDURE sp_endpoint05(
 	@party_id INT,
 	@first_day date,
@@ -127,7 +145,7 @@ BEGIN
 	FROM DELIVERABLES_QUALIFICATIONS as dq
 	WHERE dq.post_time BETWEEN @first_day AND @last_day;
 
-	SELECT p.party_name as 'Partido: ', c.canton_name as 'Canton: ',
+	SELECT ISNULL(p.party_name, '> SUM ---') as 'Partido: ', ISNULL(c.canton_name, '> SUM ---') as 'Canton: ',
 		COUNT( CASE WHEN dq.qualification <= 33 THEN 1 END) * 100 / @total_qualifications as '% Insatisfecho: ',
 		COUNT( CASE WHEN dq.qualification >= 34 AND dq.qualification <= 66 THEN 1 END) * 100 / @total_qualifications  as '% Medianamente Satisfecho: ',
 		COUNT( CASE WHEN dq.qualification >= 67 THEN 1 END) * 100 / @total_qualifications as '% Satisfecho: '
