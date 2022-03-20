@@ -80,56 +80,42 @@ GO
 -- entregable. Se consideran aceptables al top 30% de las calificaciones de satisfacción.
 -- Salida: Partido, % aceptación, posición, nota máxima obtenida
 ALTER PROCEDURE sp_endpoint04(
-	@party_id INT,
 	@first_day date,
 	@last_day date
 )
 AS
 BEGIN
-	DECLARE @total_qualifications INT;
+	DECLARE @total_qualifications_satis INT;
 
-	SELECT @total_qualifications = COUNT( dq.qualification )
+	SELECT @total_qualifications_satis = COUNT( dq.qualification )
 	FROM DELIVERABLES_QUALIFICATIONS as dq
-	WHERE dq.post_time BETWEEN @first_day AND @last_day;
+	WHERE dq.post_time BETWEEN @first_day AND @last_day
+	AND dq.qualification >= 60;
 
-	/* ranking por partido por nivel de satisfaccion*/
-	SELECT TOP(30) p.party_name as 'Partido: ',
-		COUNT( CASE WHEN dq.qualification > 66 THEN 1 END) * 100 / @total_qualifications as '% Satisfecho: ',
-		COUNT( d.kpi_type ) as 'cantidad de tipos de acciones: ',
-		/* MAX ( dq.qualification ) / 10 as 'Nota Maxima: ', por ahora no porque las mescla */
-		RANK () OVER ( ORDER BY p.party_name DESC ) AS 'Ranking No: '
+	SELECT d.kpi_type as 'comportamiento:', p.party_id AS 'Partido: ', c.canton_id as 'Canton: ', 
+		COUNT( dq.qualification ) * 100 / @total_qualifications_satis as '% Satisfaccion:',
+		MAX( dq.qualification ) as 'Nota Maxima:',
+		DENSE_RANK () OVER (PARTITION BY p.party_id, d.kpi_type 
+			ORDER BY COUNT( p.party_id ) DESC ) as 'Ranking: '
 	FROM DELIVERABLES_QUALIFICATIONS as dq
 	INNER JOIN DELIVERABLES as d ON dq.delivery_id = d.delivery_id
 	INNER JOIN CANTON as c ON dq.canton_id = c.canton_id
 	INNER JOIN CAMPAIGN_MANAGERS as cm ON d.author_id = cm.campain_manager_id
 	INNER JOIN PARTY as p ON cm.party_id = p.party_id
-	WHERE p.party_id = ISNULL(@party_id, p.party_id)
+	WHERE dq.qualification >= 60
 	AND dq.post_time BETWEEN @first_day AND @last_day
-	GROUP BY p.party_name, d.kpi_type 
-	INTERSECT
-	SELECT TOP(30) p.party_name as 'Partido: ', /* acciones con el mismo comportamiento en todos los cantones donde habran entregables */
-		COUNT( CASE WHEN dq.qualification > 66 THEN 1 END) * 100 / @total_qualifications as '% Satisfecho: ',
-		COUNT( d.kpi_type ) as 'cantidad de tipos de acciones: ',
-		RANK () OVER ( ORDER BY p.party_name DESC ) AS 'Ranking No: '
-	FROM DELIVERABLES_QUALIFICATIONS as dq
-	INNER JOIN DELIVERABLES as d ON dq.delivery_id = d.delivery_id
-	INNER JOIN CANTON as c ON dq.canton_id = c.canton_id
-	INNER JOIN CAMPAIGN_MANAGERS as cm ON d.author_id = cm.campain_manager_id
-	INNER JOIN PARTY as p ON cm.party_id = p.party_id
-	WHERE p.party_id = ISNULL(@party_id, p.party_id)
-	AND dq.post_time BETWEEN @first_day AND @last_day
-	AND c.canton_id IS NOT NULL
-	GROUP BY p.party_name, d.kpi_type 
+	GROUP BY d.kpi_type, p.party_id, c.canton_id
+	ORDER BY d.kpi_type, p.party_id, c.canton_id
 
 	/*usar INTERSECT para tener los datos iguales en ambos select*/
 END
 ;
 GO
-Exec sp_endpoint04 null, '2022-03-12', '2022-03-15';
+Exec sp_endpoint04 '2022-03-12', '2022-03-15';
 
 -- Endpoint #05
 -- Reporte de niveles de satisfacción por partido por cantón ordenados por mayor calificación a
--- menor y por partido. Finalmente agregando un sumarizado por partido de los mismos porcentajes. 
+-- menor y por partido. Finalmente agregando un sumarizado por partisdo de los mismos porcentajes. 
 -- Salida: Partido, cantón, % insatisfechos, % medianamente satisfechos, % de muy satisfechos, sumarizado
 
 CREATE PROCEDURE sp_endpoint05(
