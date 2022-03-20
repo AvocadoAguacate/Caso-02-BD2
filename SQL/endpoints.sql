@@ -94,7 +94,7 @@ BEGIN
 
 	/* ranking por partido por nivel de satisfaccion*/
 	SELECT TOP(30) p.party_name as 'Partido: ',
-		COUNT( CASE WHEN dq.qualification > 60 THEN 1 END) * 100 / @total_qualifications as '% Satisfecho: ',
+		COUNT( CASE WHEN dq.qualification > 66 THEN 1 END) * 100 / @total_qualifications as '% Satisfecho: ',
 		COUNT( d.kpi_type ) as 'cantidad de tipos de acciones: ',
 		/* MAX ( dq.qualification ) / 10 as 'Nota Maxima: ', por ahora no porque las mescla */
 		RANK () OVER ( ORDER BY p.party_name DESC ) AS 'Ranking No: '
@@ -105,10 +105,10 @@ BEGIN
 	INNER JOIN PARTY as p ON cm.party_id = p.party_id
 	WHERE p.party_id = ISNULL(@party_id, p.party_id)
 	AND dq.post_time BETWEEN @first_day AND @last_day
-	GROUP BY p.party_name
+	GROUP BY p.party_name, d.kpi_type 
 	INTERSECT
 	SELECT TOP(30) p.party_name as 'Partido: ', /* acciones con el mismo comportamiento en todos los cantones donde habran entregables */
-		COUNT( CASE WHEN dq.qualification > 60 THEN 1 END) * 100 / @total_qualifications as '% Satisfecho: ',
+		COUNT( CASE WHEN dq.qualification > 66 THEN 1 END) * 100 / @total_qualifications as '% Satisfecho: ',
 		COUNT( d.kpi_type ) as 'cantidad de tipos de acciones: ',
 		RANK () OVER ( ORDER BY p.party_name DESC ) AS 'Ranking No: '
 	FROM DELIVERABLES_QUALIFICATIONS as dq
@@ -119,7 +119,7 @@ BEGIN
 	WHERE p.party_id = ISNULL(@party_id, p.party_id)
 	AND dq.post_time BETWEEN @first_day AND @last_day
 	AND c.canton_id IS NOT NULL
-	GROUP BY p.party_name
+	GROUP BY p.party_name, d.kpi_type 
 
 	/*usar INTERSECT para tener los datos iguales en ambos select*/
 END
@@ -132,7 +132,7 @@ Exec sp_endpoint04 null, '2022-03-12', '2022-03-15';
 -- menor y por partido. Finalmente agregando un sumarizado por partido de los mismos porcentajes. 
 -- Salida: Partido, cantón, % insatisfechos, % medianamente satisfechos, % de muy satisfechos, sumarizado
 
-ALTER PROCEDURE sp_endpoint05(
+CREATE PROCEDURE sp_endpoint05(
 	@party_id INT,
 	@first_day date,
 	@last_day date
