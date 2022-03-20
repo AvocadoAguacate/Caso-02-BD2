@@ -13,7 +13,7 @@ app.get("/provinces", (req, res,next) => {
 });
 
 // Endpoint 01
-app.post("/firstsdeliverables", (req, res) => {
+app.post("/firstsDeliverables", (req, res) => {
     const result = ReportsController.getInstance().getFirstDeliverables(req.body)
     .then((result) => {
         res.json({result:result.recordsets});
@@ -35,9 +35,25 @@ app.post("/bestsMonthsDeliverys", (req, res) => {
     })
 });
 
-//Endpoint 03
-app.post("/qualifyingthirds", (req, res) => {
-    const result = ReportsController.getInstance().getQualifyingThirds(req.body.action_id)
+//Endpoint 04
+app.post("/bestsDeliverysRepeatsSatisfaction", (req, res) => {
+    const result = ReportsController.getInstance().getBestsDeliverysRepeatsSatisfaction(req.body)
+    .then((result) => {
+        res.json({result:result.recordsets});
+    })
+});
+
+//Endpoint 05
+app.post("/bestsDeliverysSatisfaction", (req, res) => {
+    const result = ReportsController.getInstance().getBestsDeliverysSatisfaction(req.body)
+    .then((result) => {
+        res.json({result:result.recordsets});
+    })
+});
+
+//Endpoint 06
+app.post("/personalDeliverables", (req, res) => {
+    const result = ReportsController.getInstance().getPersonalDeliverables(req.body)
     .then((result) => {
         res.json({result:result.recordsets});
     })

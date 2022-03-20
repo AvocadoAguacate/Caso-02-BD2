@@ -71,7 +71,7 @@ export class data_reports {
         return promise;
     }
 
-    // endpoint 02
+    // endpoint 03
 
     public getbestsMonthsDeliverys(party_id: number, text: string) : Promise<any>
     {
@@ -83,6 +83,71 @@ export class data_reports {
                 .input('party_id', sql.Int, party_id)
                 .input('text', sql.NVarChar, text)
                 .execute('endpoint03')
+              );
+            })
+          } catch(err){
+            reject(err);
+          }
+        })
+        return promise;
+    }
+
+    // endpoint 04
+
+    public getBestsDeliverysRepeatsSatisfaction(party_id: number, first_day: string, last_day: string) : Promise<any>
+    {
+        const promise = new Promise((resolve, reject) => {
+          try{
+            this.connection.then( (pool) => {
+              resolve(
+                pool.request()
+                .input('party_id', sql.Int, party_id)
+                .input('first_day', sql.Date, first_day)
+                .input('last_day', sql.Date, last_day)
+                .execute('endpoint04')
+              );
+            })
+          } catch(err){
+            reject(err);
+          }
+        })
+        return promise;
+    }
+
+    // endpoint 05
+
+    public getBestsDeliverysSatisfaction(party_id: number, first_day: string, last_day: string) : Promise<any>
+    {
+        const promise = new Promise((resolve, reject) => {
+          try{
+            this.connection.then( (pool) => {
+              resolve(
+                pool.request()
+                .input('party_id', sql.Int, party_id)
+                .input('first_day', sql.Date, first_day)
+                .input('last_day', sql.Date, last_day)
+                .execute('endpoint05')
+              );
+            })
+          } catch(err){
+            reject(err);
+          }
+        })
+        return promise;
+    }
+
+    // endpoint 06
+
+    public getPersonalDeliverables(person_id: number, plan_id: number) : Promise<any>
+    {
+        const promise = new Promise((resolve, reject) => {
+          try{
+            this.connection.then( (pool) => {
+              resolve(
+                pool.request()
+                .input('person_id', sql.Int, person_id)
+                .input('plan_id', sql.Int, plan_id)
+                .execute('endpoint01')
               );
             })
           } catch(err){
