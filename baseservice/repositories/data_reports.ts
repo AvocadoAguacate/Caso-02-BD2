@@ -71,4 +71,25 @@ export class data_reports {
         return promise;
     }
 
+    // endpoint 02
+
+    public getbestsMonthsDeliverys(party_id: number, text: string) : Promise<any>
+    {
+        const promise = new Promise((resolve, reject) => {
+          try{
+            this.connection.then( (pool) => {
+              resolve(
+                pool.request()
+                .input('party_id', sql.Int, party_id)
+                .input('text', sql.NVarChar, text)
+                .execute('endpoint03')
+              );
+            })
+          } catch(err){
+            reject(err);
+          }
+        })
+        return promise;
+    }
+
 }

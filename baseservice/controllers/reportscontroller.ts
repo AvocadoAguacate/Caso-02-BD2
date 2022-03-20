@@ -72,4 +72,22 @@ export class ReportsController {
         });
         return promise;
     }
+
+    // endpoint 03
+    
+    public getbestsMonthsDeliverys(body: any) : Promise<any>
+    {
+        let party_id: number = body.party_id  == undefined ? null : body.party_id;
+        let text: string = body.text;
+
+        const promise = new Promise( (resolve, reject) => {
+            try {
+                const dynamo = new data_reports();
+                resolve(dynamo.getbestsMonthsDeliverys(party_id, text));
+            } catch (err) {
+                reject(err);
+            }
+        });
+        return promise;
+    }
 }

@@ -20,6 +20,22 @@ app.post("/firstsdeliverables", (req, res) => {
     })
 });
 // Endpoint 02
+app.post("/qualifyingThirds", (req, res) => {
+    const result = ReportsController.getInstance().getQualifyingThirds(req.body.action_id)
+    .then((result) => {
+        res.json({result:result.recordsets});
+    })
+});
+
+//Endpoint 03
+app.post("/bestsMonthsDeliverys", (req, res) => {
+    const result = ReportsController.getInstance().getbestsMonthsDeliverys(req.body)
+    .then((result) => {
+        res.json({result:result.recordsets});
+    })
+});
+
+//Endpoint 03
 app.post("/qualifyingthirds", (req, res) => {
     const result = ReportsController.getInstance().getQualifyingThirds(req.body.action_id)
     .then((result) => {
