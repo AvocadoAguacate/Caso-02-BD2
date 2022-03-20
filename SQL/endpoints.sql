@@ -117,7 +117,7 @@ Exec sp_endpoint04 '2022-03-12', '2022-03-15';
 -- Reporte de niveles de satisfacción por partido por cantón ordenados por mayor calificación a
 -- menor y por partido. Finalmente agregando un sumarizado por partisdo de los mismos porcentajes. 
 -- Salida: Partido, cantón, % insatisfechos, % medianamente satisfechos, % de muy satisfechos, sumarizado
-
+GO
 CREATE PROCEDURE sp_endpoint05(
 	@party_id INT,
 	@first_day date,
@@ -148,8 +148,86 @@ END
 GO
 
 Exec sp_endpoint05 null, '2022-03-12', '2022-03-15';
-
+GO
 -- Endpont #06
 -- Dada un usuario ciudadano y un plan de un partido, recibir una lista de entregables para su 
 -- cantón y las respectivas calificaciones de satisfacción para ser guardadas en forma transaccional. 
 -- Salida: 200 OK
+
+-- Crea un User Defined Table Type
+CREATE TYPE DELIVERABLES_TVP AS TABLE(delivery_id INT,  qualification TINYINT)
+GO
+
+CREATE TABLE PERSON_X_DELIVERABLES(
+	person_id INT NOT NULL,
+	delivery_id INT NOT NULL,
+	qualification TINYINT NOT NULL CHECK(qualification <= 100),
+	post_time DATETIME DEFAULT GETDATE()
+)
+GO
+
+CREATE PROCEDURE sp_save_trans 
+	@person_id int , 
+	@action_id int, 
+	@TVP DELIVERABLES_TVP READONLY
+AS
+  SET NOCOUNT ON SET TRANSACTION ISOLATION LEVEL READ COMMITTED
+	BEGIN TRY
+
+		BEGIN TRANSACTION SAVE_QUALIFICATIONS
+			INSERT INTO PERSON_X_DELIVERABLES(person_id, delivery_id, qualification)
+      SELECT @person_id, T.delivery_id,T.qualification
+      FROM @TVP AS T
+			INNER JOIN DELIVERABLES
+			ON T.delivery_id = DELIVERABLES.delivery_id 
+			AND DELIVERABLES.action_id = @action_id
+    COMMIT TRANSACTION SAVE_QUALIFICATIONS
+
+    SELECT '200 OK';
+
+  END TRY
+  BEGIN CATCH
+
+    SELECT
+    ERROR_NUMBER()    AS  NumeroError,
+    ERROR_STATE()     AS  EstadoError,
+    ERROR_SEVERITY()  AS  SeveridadError,
+    ERROR_PROCEDURE() AS  ErrorDeProcedimiento,
+    ERROR_LINE()      AS  LineaError,
+    ERROR_MESSAGE()   AS  MensajeError
+    -- Non committable transaction.
+    IF (XACT_STATE()) = -1
+      ROLLBACK TRANSACTION SAVE_QUALIFICATIONS
+    -- Committable transaction.
+    IF (XACT_STATE()) = 1
+    	COMMIT TRANSACTION SAVE_QUALIFICATIONS
+		
+  END CATCH
+GO
+
+CREATE PROCEDURE sp_endpoint06
+	@canton_id INT,
+	@person_id INT,
+	@action_id INT,
+	@qualification TINYINT
+AS
+BEGIN
+	-- declaro una variable con el tipo de tabla entregable
+	DECLARE @deliverablesTVP AS DELIVERABLES_TVP;
+	-- relleno la tabla
+	INSERT INTO @deliverablesTVP (delivery_id, qualification) 
+		SELECT D.delivery_id, @qualification
+		FROM DELIVERABLES AS D
+		WHERE D.canton_id = @canton_id
+	-- guardo de manera transaccional 
+	EXEC sp_save_trans @person_id, @action_id, @deliverablesTVP
+END
+GO
+
+DECLARE @deliverablesTVP AS DELIVERABLES_TVP;
+	-- relleno la tabla
+	INSERT INTO @deliverablesTVP (delivery_id, qualification) 
+		SELECT D.delivery_id, 50
+		FROM DELIVERABLES AS D
+		WHERE D.canton_id = 1
+select * from @deliverablesTVP
