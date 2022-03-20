@@ -28,7 +28,32 @@ export class data_reports {
         return promise;
     }
 
-    public getFirstDeliverables(action_id : number) : Promise<any>
+    // endpoint 01
+
+    public getFirstDeliverables(party_id: number, canton_id: number, first_day: string, last_day: string) : Promise<any>
+    {
+        const promise = new Promise((resolve, reject) => {
+          try{
+            this.connection.then( (pool) => {
+              resolve(
+                pool.request()
+                .input('party_id', sql.Int, party_id)
+                .input('canton_id', sql.Int, canton_id)
+                .input('first_day', sql.Date, first_day)
+                .input('last_day', sql.Date, last_day)
+                .execute('endpoint01')
+              );
+            })
+          } catch(err){
+            reject(err);
+          }
+        })
+        return promise;
+    }
+
+    // endpoint 02
+
+    public getQualifyingThirds(action_id : number) : Promise<any>
     {
         const promise = new Promise((resolve, reject) => {
           try{

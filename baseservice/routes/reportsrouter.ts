@@ -12,9 +12,16 @@ app.get("/provinces", (req, res,next) => {
     })
 });
 
-// Endpoint 02
+// Endpoint 01
 app.post("/firstsdeliverables", (req, res) => {
-    const result = ReportsController.getInstance().getFirstDeliverables(req.body.action_id)
+    const result = ReportsController.getInstance().getFirstDeliverables(req.body)
+    .then((result) => {
+        res.json({result:result.recordsets});
+    })
+});
+// Endpoint 02
+app.post("/qualifyingthirds", (req, res) => {
+    const result = ReportsController.getInstance().getQualifyingThirds(req.body.action_id)
     .then((result) => {
         res.json({result:result.recordsets});
     })
