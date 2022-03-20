@@ -2,10 +2,12 @@ import * as express from 'express';
 import { Logger } from '../common'
 import { ReportsController } from '../controllers'
 
+
 const app = express();
 const log = new Logger();
+const { cacheInit } = require('../midleware/cache')
 
-app.get("/provinces", (req, res,next) => {
+app.get("/provinces",cacheInit, (req, res,next) => {
     const result = ReportsController.getInstance().listArticles()
     .then((result) => {
         res.json({result:result});
