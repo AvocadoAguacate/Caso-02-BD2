@@ -12,4 +12,12 @@ app.get("/provinces", (req, res,next) => {
     })
 });
 
+// Endpoint 02
+app.post("/firstsdeliverables", (req, res) => {
+    const result = ReportsController.getInstance().getFirstDeliverables(req.body.action_id)
+    .then((result) => {
+        res.json({result:result.recordsets});
+    })
+});
+
 export { app as reportsrouter };

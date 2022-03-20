@@ -29,12 +29,25 @@ export class ReportsController {
     {
       const promise = new Promise( async (resolve, reject) => {
         try {
-          const dynamo = new data_reports()
+          const dynamo = new data_reports();
           resolve(dynamo.getAllProvinces());
         } catch (err) {
-         reject(err)
+         reject(err);
         }
-       })
+       });
+        return promise;
+    }
+    
+    public getFirstDeliverables(action_id: number) : Promise<any>
+    {
+        const promise = new Promise( (resolve, reject) => {
+            try {
+                const dynamo = new data_reports();
+                resolve(dynamo.getFirstDeliverables(action_id));
+            } catch (err) {
+                reject(err);
+            }
+        });
         return promise;
     }
 }
