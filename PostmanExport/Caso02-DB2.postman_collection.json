@@ -1,0 +1,313 @@
+{
+	"info": {
+		"_postman_id": "8208d110-f1ad-45b3-8389-35a734ceff1b",
+		"name": "Caso02-DB2",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "saludar",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:5000/api/kind/saludos",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "5000",
+					"path": [
+						"api",
+						"kind",
+						"saludos"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "provinces",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:5000/api/reports/provinces",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "5000",
+					"path": [
+						"api",
+						"reports",
+						"provinces"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "saludosTo",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "urlencoded",
+					"urlencoded": [
+						{
+							"key": "quien",
+							"value": "Esteban",
+							"type": "text"
+						}
+					]
+				},
+				"url": {
+					"raw": "http://localhost:5000/api/kind/saludosTo",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "5000",
+					"path": [
+						"api",
+						"kind",
+						"saludosTo"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "endpoint02",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "urlencoded",
+					"urlencoded": [
+						{
+							"key": "action_id",
+							"value": "1",
+							"type": "text"
+						}
+					]
+				},
+				"url": {
+					"raw": "http://localhost:5000/api/reports/qualifyingThirds",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "5000",
+					"path": [
+						"api",
+						"reports",
+						"qualifyingThirds"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "endpoint01",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "urlencoded",
+					"urlencoded": [
+						{
+							"key": "party_id",
+							"value": "1",
+							"type": "text"
+						},
+						{
+							"key": "canton_id",
+							"value": "1",
+							"type": "text"
+						},
+						{
+							"key": "first_day",
+							"value": "\"necesito una fecha de prueba mop\"",
+							"type": "text"
+						},
+						{
+							"key": "last_day",
+							"value": "\"necesito una fecha de prueba mop\"",
+							"type": "text"
+						}
+					]
+				},
+				"url": {
+					"raw": "http://localhost:5000/api/reports/firstsDeliverables",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "5000",
+					"path": [
+						"api",
+						"reports",
+						"firstsDeliverables"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "endpoint03",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "urlencoded",
+					"urlencoded": [
+						{
+							"key": "party_id",
+							"value": "1",
+							"type": "text"
+						},
+						{
+							"key": "text",
+							"value": "carreteras valle",
+							"type": "text"
+						}
+					]
+				},
+				"url": {
+					"raw": "http://localhost:5000/api/reports/bestsMonthsDeliverys",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "5000",
+					"path": [
+						"api",
+						"reports",
+						"bestsMonthsDeliverys"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "endpoint04",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "urlencoded",
+					"urlencoded": [
+						{
+							"key": "party_id",
+							"value": "1",
+							"type": "text"
+						},
+						{
+							"key": "first_day",
+							"value": "\"mae ocupo una fecha\"",
+							"type": "text"
+						},
+						{
+							"key": "last_day",
+							"value": "\"mae ocupo una fecha\"",
+							"type": "text"
+						}
+					]
+				},
+				"url": {
+					"raw": "http://localhost:5000/api/reports/bestsDeliverysRepeatsSatisfaction",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "5000",
+					"path": [
+						"api",
+						"reports",
+						"bestsDeliverysRepeatsSatisfaction"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "endpoint05",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "urlencoded",
+					"urlencoded": [
+						{
+							"key": "party_id",
+							"value": "1",
+							"type": "text"
+						},
+						{
+							"key": "first_day",
+							"value": "\"mae ocupo una fecha\"",
+							"type": "text"
+						},
+						{
+							"key": "last_day",
+							"value": "\"mae ocupo una fecha\"",
+							"type": "text"
+						}
+					]
+				},
+				"url": {
+					"raw": "http://localhost:5000/api/reports/bestsDeliverysSatisfaction",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "5000",
+					"path": [
+						"api",
+						"reports",
+						"bestsDeliverysSatisfaction"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "endpoint06",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "urlencoded",
+					"urlencoded": [
+						{
+							"key": "plan_id",
+							"value": "1",
+							"type": "text"
+						},
+						{
+							"key": "person_id",
+							"value": "1",
+							"type": "text"
+						}
+					]
+				},
+				"url": {
+					"raw": "http://localhost:5000/api/reports/personalDeliverables",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "5000",
+					"path": [
+						"api",
+						"reports",
+						"personalDeliverables"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}
