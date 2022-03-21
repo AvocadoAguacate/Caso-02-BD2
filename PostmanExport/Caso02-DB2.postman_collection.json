@@ -200,18 +200,13 @@
 					"mode": "urlencoded",
 					"urlencoded": [
 						{
-							"key": "party_id",
-							"value": "1",
-							"type": "text"
-						},
-						{
 							"key": "first_day",
-							"value": "\"mae ocupo una fecha\"",
+							"value": "2022-03-12",
 							"type": "text"
 						},
 						{
 							"key": "last_day",
-							"value": "\"mae ocupo una fecha\"",
+							"value": "2022-03-15",
 							"type": "text"
 						}
 					]
@@ -247,12 +242,12 @@
 						},
 						{
 							"key": "first_day",
-							"value": "\"mae ocupo una fecha\"",
+							"value": "2022-03-12",
 							"type": "text"
 						},
 						{
 							"key": "last_day",
-							"value": "\"mae ocupo una fecha\"",
+							"value": "2022-03-15",
 							"type": "text"
 						}
 					]
@@ -282,19 +277,29 @@
 					"mode": "urlencoded",
 					"urlencoded": [
 						{
-							"key": "plan_id",
-							"value": "1",
+							"key": "canton_id",
+							"value": "2",
 							"type": "text"
 						},
 						{
 							"key": "person_id",
 							"value": "1",
 							"type": "text"
+						},
+						{
+							"key": "action_id",
+							"value": "1",
+							"type": "text"
+						},
+						{
+							"key": "@qualification",
+							"value": "50",
+							"type": "text"
 						}
 					]
 				},
 				"url": {
-					"raw": "http://localhost:5000/api/reports/personalDeliverables",
+					"raw": "http://localhost:5000/api/reports/saveDeliverablesTrans",
 					"protocol": "http",
 					"host": [
 						"localhost"
@@ -303,7 +308,7 @@
 					"path": [
 						"api",
 						"reports",
-						"personalDeliverables"
+						"saveDeliverablesTrans"
 					]
 				}
 			},

@@ -52,8 +52,8 @@ app.post("/bestsDeliverysSatisfaction", (req, res) => {
 });
 
 //Endpoint 06
-app.post("/personalDeliverables", (req, res) => {
-    const result = ReportsController.getInstance().getPersonalDeliverables(req.body)
+app.post("/saveDeliverablesTrans", (req, res) => {
+    const result = ReportsController.getInstance().getSaveDeliverablesTrans(req.body)
     .then((result) => {
         res.json({result:result.recordsets});
     })
