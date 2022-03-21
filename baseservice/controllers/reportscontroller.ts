@@ -131,15 +131,17 @@ export class ReportsController {
 
     // endpoint 06
     
-    public getPersonalDeliverables(body: any) : Promise<any>
+    public getSaveDeliverablesTrans(body: any) : Promise<any>
     {
         let person_id: number = body.person_id;
-        let plan_id: number = body.plan_id;
+        let canton_id: number = body.canton_id;
+        let action_id: number = body.action_id;
+        let qualification: number = body.qualification; 
 
         const promise = new Promise( (resolve, reject) => {
             try {
                 const dynamo = new data_reports();
-                resolve(dynamo.getPersonalDeliverables(person_id, plan_id));
+                resolve(dynamo.getSaveDeliverablesTrans(person_id, canton_id, action_id, qualification));
             } catch (err) {
                 reject(err);
             }

@@ -138,7 +138,7 @@ export class data_reports {
 
     // endpoint 06
 
-    public getPersonalDeliverables(person_id: number, plan_id: number) : Promise<any>
+    public getSaveDeliverablesTrans(person_id: number, canton_id: number, action_id: number, qualification: number) : Promise<any>
     {
         const promise = new Promise((resolve, reject) => {
           try{
@@ -146,8 +146,10 @@ export class data_reports {
               resolve(
                 pool.request()
                 .input('person_id', sql.Int, person_id)
-                .input('plan_id', sql.Int, plan_id)
-                .execute('endpoint01')
+                .input('canton_id', sql.Int, canton_id)
+                .input('action_id', sql.Int, action_id)
+                .input('qualification', sql.Int, qualification)
+                .execute('endpoint06')
               );
             })
           } catch(err){
