@@ -79,6 +79,22 @@ GO
 -- cuya acción tenga el mismo comportamiento para todos los cantones donde habrá un 
 -- entregable. Se consideran aceptables al top 30% de las calificaciones de satisfacción.
 -- Salida: Partido, % aceptación, posición, nota máxima obtenida
+/*
+SELECT p.party_id AS 'Partido: ', c.canton_id as 'Canton: ', 
+		COUNT( dq.qualification ) * 100 / @total_qualifications_satis as '% Satisfaccion:',
+		MAX( dq.qualification ) as 'Nota Maxima:',
+		DENSE_RANK () OVER (PARTITION BY p.party_id 
+			ORDER BY COUNT( p.party_id ) DESC ) as 'Ranking: '
+	FROM DELIVERABLES_QUALIFICATIONS as dq
+	INNER JOIN DELIVERABLES as d ON dq.delivery_id = d.delivery_id
+	INNER JOIN CANTON as c ON dq.canton_id = c.canton_id
+	INNER JOIN CAMPAIGN_MANAGERS as cm ON d.author_id = cm.campain_manager_id
+	INNER JOIN PARTY as p ON cm.party_id = p.party_id
+	WHERE dq.qualification >= 60
+	AND dq.post_time BETWEEN @first_day AND @last_day
+	GROUP BY p.party_id, c.canton_id
+	ORDER BY p.party_id, c.canton_id
+*/
 ALTER PROCEDURE sp_endpoint04(
 	@first_day date,
 	@last_day date
@@ -89,25 +105,38 @@ BEGIN
 
 	SELECT @total_qualifications_satis = COUNT( dq.qualification )
 	FROM DELIVERABLES_QUALIFICATIONS as dq
-	WHERE dq.post_time BETWEEN @first_day AND @last_day
-	AND dq.qualification >= 60;
+	WHERE dq.post_time BETWEEN @first_day AND @last_day;
 
-	SELECT d.kpi_type as 'comportamiento:', p.party_id AS 'Partido: ', c.canton_id as 'Canton: ', 
-		COUNT( dq.qualification ) * 100 / @total_qualifications_satis as '% Satisfaccion:',
-		MAX( dq.qualification ) as 'Nota Maxima:',
-		DENSE_RANK () OVER (PARTITION BY p.party_id, d.kpi_type 
-			ORDER BY COUNT( p.party_id ) DESC ) as 'Ranking: '
-	FROM DELIVERABLES_QUALIFICATIONS as dq
-	INNER JOIN DELIVERABLES as d ON dq.delivery_id = d.delivery_id
-	INNER JOIN CANTON as c ON dq.canton_id = c.canton_id
-	INNER JOIN CAMPAIGN_MANAGERS as cm ON d.author_id = cm.campain_manager_id
-	INNER JOIN PARTY as p ON cm.party_id = p.party_id
-	WHERE dq.qualification >= 60
-	AND dq.post_time BETWEEN @first_day AND @last_day
-	GROUP BY d.kpi_type, p.party_id, c.canton_id
-	ORDER BY d.kpi_type, p.party_id, c.canton_id
-
-	/*usar INTERSECT para tener los datos iguales en ambos select*/
+	SELECT tab.id_party AS 'Partido: ', SUM(tab.satisfacion) as '% Satisfaccion:',
+		MAX(tab.notamax) * 0.1 as 'Nota maxima:', RANK() OVER (ORDER BY tab.id_party DESC) AS 'Ranking :'
+	FROM (
+		SELECT p.party_id AS id_party, c.canton_id as id_canton, 
+			COUNT( dq.qualification ) * 100 / @total_qualifications_satis as satisfacion,
+			MAX( dq.qualification ) as notamax
+		FROM DELIVERABLES_QUALIFICATIONS as dq
+		INNER JOIN DELIVERABLES as d ON dq.delivery_id = d.delivery_id
+		INNER JOIN CANTON as c ON dq.canton_id = c.canton_id
+		INNER JOIN CAMPAIGN_MANAGERS as cm ON d.author_id = cm.campain_manager_id
+		INNER JOIN PARTY as p ON cm.party_id = p.party_id
+		WHERE dq.qualification >= 60
+		AND dq.post_time BETWEEN @first_day AND @last_day
+		GROUP BY p.party_id, c.canton_id
+		EXCEPT
+		SELECT p.party_id AS id_party, c.canton_id as id_canton, 
+			COUNT( dq.qualification ) * 100 / @total_qualifications_satis as satisfacion,
+			MAX( dq.qualification ) as notamax
+		FROM DELIVERABLES_QUALIFICATIONS as dq
+		INNER JOIN DELIVERABLES as d ON dq.delivery_id = d.delivery_id
+		INNER JOIN CANTON as c ON dq.canton_id = c.canton_id
+		INNER JOIN CAMPAIGN_MANAGERS as cm ON d.author_id = cm.campain_manager_id
+		INNER JOIN PARTY as p ON cm.party_id = p.party_id
+		WHERE dq.qualification < 60
+		AND dq.post_time BETWEEN @first_day AND @last_day
+		GROUP BY p.party_id, c.canton_id
+		/*calificaciones x canton >= 60 que no tenga evaluaciones menores a 60 en el mismo canton*/
+	) as tab
+	GROUP BY tab.id_party
+	ORDER BY '% Satisfaccion:' DESC;
 END
 ;
 GO
