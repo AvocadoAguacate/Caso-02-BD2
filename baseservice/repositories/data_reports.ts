@@ -94,14 +94,13 @@ export class data_reports {
 
     // endpoint 04
 
-    public getBestsDeliverysRepeatsSatisfaction(party_id: number, first_day: string, last_day: string) : Promise<any>
+    public getBestsDeliverysRepeatsSatisfaction(first_day: string, last_day: string) : Promise<any>
     {
         const promise = new Promise((resolve, reject) => {
           try{
             this.connection.then( (pool) => {
               resolve(
                 pool.request()
-                .input('party_id', sql.Int, party_id)
                 .input('first_day', sql.Date, first_day)
                 .input('last_day', sql.Date, last_day)
                 .execute('endpoint04')
