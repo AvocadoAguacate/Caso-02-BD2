@@ -77,8 +77,9 @@ GO
 -- full text config
 CREATE FULLTEXT CATALOG AdvWksDocFTCat; 
 GO
-CREATE UNIQUE INDEX ui_ukDoc ON ACTION_PLAN(action_description); 
+CREATE UNIQUE INDEX ui_ukDoc ON ACTION_PLAN(action_id); 
 GO
+-- puede dar error esta linea, a la hora de crearlo
 DROP FULLTEXT INDEX ON ACTION_PLAN
 GO
 CREATE FULLTEXT INDEX ON ACTION_PLAN  
@@ -129,23 +130,7 @@ GO
 -- cuya acción tenga el mismo comportamiento para todos los cantones donde habrá un 
 -- entregable. Se consideran aceptables al top 30% de las calificaciones de satisfacción.
 -- Salida: Partido, % aceptación, posición, nota máxima obtenida
-/*
-SELECT p.party_id AS 'Partido: ', c.canton_id as 'Canton: ', 
-		COUNT( dq.qualification ) * 100 / @total_qualifications_satis as '% Satisfaccion:',
-		MAX( dq.qualification ) as 'Nota Maxima:',
-		DENSE_RANK () OVER (PARTITION BY p.party_id 
-			ORDER BY COUNT( p.party_id ) DESC ) as 'Ranking: '
-	FROM DELIVERABLES_QUALIFICATIONS as dq
-	INNER JOIN DELIVERABLES as d ON dq.delivery_id = d.delivery_id
-	INNER JOIN CANTON as c ON dq.canton_id = c.canton_id
-	INNER JOIN CAMPAIGN_MANAGERS as cm ON d.author_id = cm.campain_manager_id
-	INNER JOIN PARTY as p ON cm.party_id = p.party_id
-	WHERE dq.qualification >= 60
-	AND dq.post_time BETWEEN @first_day AND @last_day
-	GROUP BY p.party_id, c.canton_id
-	ORDER BY p.party_id, c.canton_id
-*/
-ALTER PROCEDURE sp_endpoint04(
+CREATE PROCEDURE sp_endpoint04(
 	@first_day date,
 	@last_day date
 )
@@ -190,7 +175,6 @@ BEGIN
 END
 ;
 GO
-Exec sp_endpoint04 '2022-03-12', '2022-03-15';
 
 -- Endpoint #05
 -- Reporte de niveles de satisfacción por partido por cantón ordenados por mayor calificación a
@@ -226,7 +210,6 @@ END
 ;
 GO
 
-Exec sp_endpoint05 null, '2022-03-12', '2022-03-15';
 GO
 -- Endpont #06
 -- Dada un usuario ciudadano y un plan de un partido, recibir una lista de entregables para su 
