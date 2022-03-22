@@ -73,6 +73,39 @@ GO
 -- Listar por año, los 3 top meses del volumen de entregables por 
 -- partido que estén relacionados a una lista de palabras proporcionadas
 --- Salida: Partido, año, nombre del mes, % de entregables, position
+CREATE PROCEDURE sp_endpoint03
+	@text NVARCHAR,
+	@first_day DATE,
+	@last_day DATE
+AS
+BEGIN
+	with textFilter AS (
+	SELECT DELIVERABLES.delivery_id,
+		DELIVERABLES.post_time,
+		CAMPAIGN_MANAGERS.party_id,
+		ACTION_PLAN.action_description
+	FROM DELIVERABLES
+	INNER JOIN ACTION_PLAN
+	ON ACTION_PLAN.action_id = DELIVERABLES.action_id
+	INNER JOIN CAMPAIGN_MANAGERS
+	ON CAMPAIGN_MANAGERS.campain_manager_id = DELIVERABLES.author_id
+	WHERE CONTAINS(action_description, @text)
+	AND	DELIVERABLES.post_time BETWEEN @first_day AND @last_day
+	)
+	SELECT party_id As Party, Total , Año, Mes, Ranking
+	FROM (
+	SELECT 
+		party_id,
+		COUNT(delivery_id)  AS Total,
+		YEAR(post_time) AS Año,
+		DATENAME(MONTH, post_time) AS Mes,
+		DENSE_RANK() OVER (PARTITION BY party_id ORDER BY COUNT(delivery_id) DESC) AS Ranking
+	FROM textFilter
+	GROUP BY party_id, YEAR(post_time), DATENAME(MONTH, post_time)
+	) AS CountTable
+	WHERE Ranking < 4
+END
+GO
 
 --** Endpoint #04
 -- Ranking por partido con mayores niveles de satisfacción en su plan en forma global pero 
