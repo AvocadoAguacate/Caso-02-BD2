@@ -164,13 +164,18 @@
 					"mode": "urlencoded",
 					"urlencoded": [
 						{
-							"key": "party_id",
-							"value": "1",
+							"key": "last_day",
+							"value": "2024-02-16",
 							"type": "text"
 						},
 						{
 							"key": "text",
 							"value": "carreteras valle",
+							"type": "text"
+						},
+						{
+							"key": "first_day",
+							"value": "2022-02-16",
 							"type": "text"
 						}
 					]

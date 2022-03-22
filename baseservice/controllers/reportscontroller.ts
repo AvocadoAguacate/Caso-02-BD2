@@ -77,13 +77,14 @@ export class ReportsController {
     
     public getbestsMonthsDeliverys(body: any) : Promise<any>
     {
-        let party_id: number = body.party_id  == undefined ? null : body.party_id;
         let text: string = body.text;
+        let first_day: string = body.first_day;
+        let last_day: string = body.last_day;
 
         const promise = new Promise( (resolve, reject) => {
             try {
                 const dynamo = new data_reports();
-                resolve(dynamo.getbestsMonthsDeliverys(party_id, text));
+                resolve(dynamo.getbestsMonthsDeliverys(last_day, first_day, text));
             } catch (err) {
                 reject(err);
             }

@@ -73,14 +73,15 @@ export class data_reports {
 
     // endpoint 03
 
-    public getbestsMonthsDeliverys(party_id: number, text: string) : Promise<any>
+    public getbestsMonthsDeliverys(last_day: string, first_day: string, text: string) : Promise<any>
     {
         const promise = new Promise((resolve, reject) => {
           try{
             this.connection.then( (pool) => {
               resolve(
                 pool.request()
-                .input('party_id', sql.Int, party_id)
+                .input('last_day', sql.Date, last_day)
+                .input('text', sql.Date, first_day)
                 .input('text', sql.NVarChar, text)
                 .execute('endpoint03')
               );
