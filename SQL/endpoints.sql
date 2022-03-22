@@ -73,6 +73,23 @@ GO
 -- Listar por año, los 3 top meses del volumen de entregables por 
 -- partido que estén relacionados a una lista de palabras proporcionadas
 --- Salida: Partido, año, nombre del mes, % de entregables, position
+
+-- full text config
+CREATE FULLTEXT CATALOG AdvWksDocFTCat; 
+GO
+CREATE UNIQUE INDEX ui_ukDoc ON ACTION_PLAN(action_description); 
+GO
+DROP FULLTEXT INDEX ON ACTION_PLAN
+GO
+CREATE FULLTEXT INDEX ON ACTION_PLAN  
+(  
+    action_description                         --Full-text index column name  
+)  
+KEY INDEX ui_ukDoc ON AdvWksDocFTCat --Unique index  
+WITH CHANGE_TRACKING AUTO 
+GO
+
+--
 CREATE PROCEDURE sp_endpoint03
 	@text NVARCHAR,
 	@first_day DATE,
