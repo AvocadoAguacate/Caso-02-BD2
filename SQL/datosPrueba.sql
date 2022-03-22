@@ -33,10 +33,10 @@ EXEC sp_create_party_plan 'Nuevo Plan del mañana 20XX', 'Rachel', 'Yates';
 EXEC sp_create_party_plan 'Plan por el futuro 20XX', 'Kelly', 'Zhang';
 EXEC sp_create_party_plan 'La Gran Roforma 20XX', 'Teresa', 'Ray';
 
-EXEC sp_create_action_plan 'Gran Plan del futuro 20XX', 'Action Plan 01', 'Esta accion tiene como objetivo general...';
-EXEC sp_create_action_plan 'Nuevo Plan del mañana 20XX', 'Action Plan 02', 'Esta accion tiene como objetivo general...';
-EXEC sp_create_action_plan 'Plan por el futuro 20XX', 'Action Plan 03', 'Esta accion tiene como objetivo general...';
-EXEC sp_create_action_plan 'La Gran Roforma 20XX', 'Action Plan 04', 'Esta accion tiene como objetivo general...';
+EXEC sp_create_action_plan 'Gran Plan del futuro 20XX', 'Action Plan 01', 'Esta calle tiene como objetivo general';
+EXEC sp_create_action_plan 'Nuevo Plan del mañana 20XX', 'Action Plan 02', 'Esta accion valle ';
+EXEC sp_create_action_plan 'Plan por el futuro 20XX', 'Action Plan 03', 'Esta tiene como objetivo general';
+EXEC sp_create_action_plan 'La Gran Roforma 20XX', 'Action Plan 04', 'valle accion tiene como objetivo general';
 
 
 EXEC sp_insert_delivery 1, 1, 20, 472, 7, '5/11/2021', 3, 'Mynah, indian';

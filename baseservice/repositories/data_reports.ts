@@ -41,7 +41,7 @@ export class data_reports {
                 .input('canton_id', sql.Int, canton_id)
                 .input('first_day', sql.Date, first_day)
                 .input('last_day', sql.Date, last_day)
-                .execute('endpoint01')
+                .execute('sp_endpoint01')
               );
             })
           } catch(err){
@@ -61,7 +61,7 @@ export class data_reports {
               resolve(
                 pool.request()
                 .input('action_id', sql.Int, action_id)
-                .execute('endpoint02')
+                .execute('sp_endpoint02')
               );
             })
           } catch(err){
@@ -73,7 +73,7 @@ export class data_reports {
 
     // endpoint 03
 
-    public getbestsMonthsDeliverys(last_day: string, first_day: string, text: string) : Promise<any>
+    public getbestsMonthsDeliverys(last_day: string, first_day: string, words_to_search: string) : Promise<any>
     {
         const promise = new Promise((resolve, reject) => {
           try{
@@ -81,9 +81,9 @@ export class data_reports {
               resolve(
                 pool.request()
                 .input('last_day', sql.Date, last_day)
-                .input('text', sql.Date, first_day)
-                .input('text', sql.NVarChar, text)
-                .execute('endpoint03')
+                .input('first_day', sql.Date, first_day)
+                .input('words_to_search', sql.NVarChar, words_to_search)
+                .execute('sp_endpoint03')
               );
             })
           } catch(err){
@@ -104,7 +104,7 @@ export class data_reports {
                 pool.request()
                 .input('first_day', sql.Date, first_day)
                 .input('last_day', sql.Date, last_day)
-                .execute('endpoint04')
+                .execute('sp_endpoint04')
               );
             })
           } catch(err){
@@ -126,7 +126,7 @@ export class data_reports {
                 .input('party_id', sql.Int, party_id)
                 .input('first_day', sql.Date, first_day)
                 .input('last_day', sql.Date, last_day)
-                .execute('endpoint05')
+                .execute('sp_endpoint05')
               );
             })
           } catch(err){
@@ -149,7 +149,7 @@ export class data_reports {
                 .input('canton_id', sql.Int, canton_id)
                 .input('action_id', sql.Int, action_id)
                 .input('qualification', sql.Int, qualification)
-                .execute('endpoint06')
+                .execute('sp_endpoint06')
               );
             })
           } catch(err){

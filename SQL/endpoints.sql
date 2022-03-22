@@ -40,9 +40,7 @@ GO
 --sacar la densidad para todos los cantones que
 --hay en los rangos de satisfacción del primer, segundo y tercer tercio
 CREATE PROCEDURE sp_endpoint02
-  @action_id INT,
-  @party_id INT,
-  @kpi_type INT
+  @action_id INT
 AS
   BEGIN
     SELECT party_id ,action_id, delivery_id, [0], [1],[2]
@@ -58,9 +56,7 @@ AS
       ON PLAN_PARTY.plan_id = DELIVERABLES.plan_id
       INNER JOIN CAMPAIGN_MANAGERS
       ON PLAN_PARTY.author_id = CAMPAIGN_MANAGERS.campain_manager_id
-      WHERE DELIVERABLES.action_id = ISNULL(@action_id, DELIVERABLES.action_id)
-      AND CAMPAIGN_MANAGERS.party_id = ISNULL(@party_id, CAMPAIGN_MANAGERS.party_id)
-      AND DELIVERABLES.kpi_type = ISNULL(@kpi_type, DELIVERABLES.kpi_type)
+      WHERE DELIVERABLES.action_id = @action_id
     ) AS SOURCE_TABLE
     PIVOT
     (
@@ -90,9 +86,8 @@ KEY INDEX ui_ukDoc ON AdvWksDocFTCat --Unique index
 WITH CHANGE_TRACKING AUTO 
 GO
 
---
 CREATE PROCEDURE sp_endpoint03
-	@text NVARCHAR,
+	@words_to_search NVARCHAR(100),
 	@first_day DATE,
 	@last_day DATE
 AS
@@ -107,7 +102,7 @@ BEGIN
 	ON ACTION_PLAN.action_id = DELIVERABLES.action_id
 	INNER JOIN CAMPAIGN_MANAGERS
 	ON CAMPAIGN_MANAGERS.campain_manager_id = DELIVERABLES.author_id
-	WHERE CONTAINS(action_description, @text)
+	WHERE CONTAINS(action_description, @words_to_search)
 	AND	DELIVERABLES.post_time BETWEEN @first_day AND @last_day
 	)
 	SELECT party_id As Party, Total , Año, Mes, Ranking

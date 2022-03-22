@@ -5,8 +5,8 @@ import { Logger } from '../common'
 
 const sqlConfig = {
   user: "sa",
-  password: "pass123",
-  server: "localhost",
+  password: "123",
+  server: "25.77.226.95",
   database: "Caso02_DB2_Esteban_David",
   pool: {
     max: 10,
@@ -25,8 +25,8 @@ export class AdminPool {
   private sqlConfig: Object = 
   {
     user: "sa",
-    password: "pass123",
-    server: "localhost",
+    password: "123",
+    server: "25.77.226.95",
     database: "Caso02_DB2_Esteban_David",
     pool: {
       max: 10,
