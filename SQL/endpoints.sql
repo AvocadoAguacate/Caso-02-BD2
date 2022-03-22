@@ -40,10 +40,12 @@ GO
 --sacar la densidad para todos los cantones que
 --hay en los rangos de satisfacción del primer, segundo y tercer tercio
 CREATE PROCEDURE sp_endpoint02
-@action_id INT
+  @action_id INT,
+  @party_id INT,
+  @kpi_type INT
 AS
   BEGIN
-    SELECT party_id AS Party_Id,action_id AS Action_ID, delivery_id AS Party_Id, [0], [1],[2]
+    SELECT party_id ,action_id, delivery_id, [0], [1],[2]
     FROM 
     (
       SELECT	CAMPAIGN_MANAGERS.party_id, DELIVERABLES.action_id, DELIVERABLES.delivery_id, qualification/34  AS Tercio, delivery_qualification_id
@@ -56,7 +58,9 @@ AS
       ON PLAN_PARTY.plan_id = DELIVERABLES.plan_id
       INNER JOIN CAMPAIGN_MANAGERS
       ON PLAN_PARTY.author_id = CAMPAIGN_MANAGERS.campain_manager_id
-      WHERE DELIVERABLES.action_id = @action_id
+      WHERE DELIVERABLES.action_id = ISNULL(@action_id, DELIVERABLES.action_id)
+      AND CAMPAIGN_MANAGERS.party_id = ISNULL(@party_id, CAMPAIGN_MANAGERS.party_id)
+      AND DELIVERABLES.kpi_type = ISNULL(@kpi_type, DELIVERABLES.kpi_type)
     ) AS SOURCE_TABLE
     PIVOT
     (
@@ -69,12 +73,61 @@ GO
 -- Listar por año, los 3 top meses del volumen de entregables por 
 -- partido que estén relacionados a una lista de palabras proporcionadas
 --- Salida: Partido, año, nombre del mes, % de entregables, position
+CREATE PROCEDURE sp_endpoint03
+	@text NVARCHAR,
+	@first_day DATE,
+	@last_day DATE
+AS
+BEGIN
+	with textFilter AS (
+	SELECT DELIVERABLES.delivery_id,
+		DELIVERABLES.post_time,
+		CAMPAIGN_MANAGERS.party_id,
+		ACTION_PLAN.action_description
+	FROM DELIVERABLES
+	INNER JOIN ACTION_PLAN
+	ON ACTION_PLAN.action_id = DELIVERABLES.action_id
+	INNER JOIN CAMPAIGN_MANAGERS
+	ON CAMPAIGN_MANAGERS.campain_manager_id = DELIVERABLES.author_id
+	WHERE CONTAINS(action_description, @text)
+	AND	DELIVERABLES.post_time BETWEEN @first_day AND @last_day
+	)
+	SELECT party_id As Party, Total , Año, Mes, Ranking
+	FROM (
+	SELECT 
+		party_id,
+		COUNT(delivery_id)  AS Total,
+		YEAR(post_time) AS Año,
+		DATENAME(MONTH, post_time) AS Mes,
+		DENSE_RANK() OVER (PARTITION BY party_id ORDER BY COUNT(delivery_id) DESC) AS Ranking
+	FROM textFilter
+	GROUP BY party_id, YEAR(post_time), DATENAME(MONTH, post_time)
+	) AS CountTable
+	WHERE Ranking < 4
+END
+GO
 
 --** Endpoint #04
 -- Ranking por partido con mayores niveles de satisfacción en su plan en forma global pero 
 -- cuya acción tenga el mismo comportamiento para todos los cantones donde habrá un 
 -- entregable. Se consideran aceptables al top 30% de las calificaciones de satisfacción.
 -- Salida: Partido, % aceptación, posición, nota máxima obtenida
+/*
+SELECT p.party_id AS 'Partido: ', c.canton_id as 'Canton: ', 
+		COUNT( dq.qualification ) * 100 / @total_qualifications_satis as '% Satisfaccion:',
+		MAX( dq.qualification ) as 'Nota Maxima:',
+		DENSE_RANK () OVER (PARTITION BY p.party_id 
+			ORDER BY COUNT( p.party_id ) DESC ) as 'Ranking: '
+	FROM DELIVERABLES_QUALIFICATIONS as dq
+	INNER JOIN DELIVERABLES as d ON dq.delivery_id = d.delivery_id
+	INNER JOIN CANTON as c ON dq.canton_id = c.canton_id
+	INNER JOIN CAMPAIGN_MANAGERS as cm ON d.author_id = cm.campain_manager_id
+	INNER JOIN PARTY as p ON cm.party_id = p.party_id
+	WHERE dq.qualification >= 60
+	AND dq.post_time BETWEEN @first_day AND @last_day
+	GROUP BY p.party_id, c.canton_id
+	ORDER BY p.party_id, c.canton_id
+*/
 ALTER PROCEDURE sp_endpoint04(
 	@first_day date,
 	@last_day date
@@ -85,25 +138,38 @@ BEGIN
 
 	SELECT @total_qualifications_satis = COUNT( dq.qualification )
 	FROM DELIVERABLES_QUALIFICATIONS as dq
-	WHERE dq.post_time BETWEEN @first_day AND @last_day
-	AND dq.qualification >= 60;
+	WHERE dq.post_time BETWEEN @first_day AND @last_day;
 
-	SELECT d.kpi_type as 'comportamiento:', p.party_id AS 'Partido: ', c.canton_id as 'Canton: ', 
-		COUNT( dq.qualification ) * 100 / @total_qualifications_satis as '% Satisfaccion:',
-		MAX( dq.qualification ) as 'Nota Maxima:',
-		DENSE_RANK () OVER (PARTITION BY p.party_id, d.kpi_type 
-			ORDER BY COUNT( p.party_id ) DESC ) as 'Ranking: '
-	FROM DELIVERABLES_QUALIFICATIONS as dq
-	INNER JOIN DELIVERABLES as d ON dq.delivery_id = d.delivery_id
-	INNER JOIN CANTON as c ON dq.canton_id = c.canton_id
-	INNER JOIN CAMPAIGN_MANAGERS as cm ON d.author_id = cm.campain_manager_id
-	INNER JOIN PARTY as p ON cm.party_id = p.party_id
-	WHERE dq.qualification >= 60
-	AND dq.post_time BETWEEN @first_day AND @last_day
-	GROUP BY d.kpi_type, p.party_id, c.canton_id
-	ORDER BY d.kpi_type, p.party_id, c.canton_id
-
-	/*usar INTERSECT para tener los datos iguales en ambos select*/
+	SELECT tab.id_party AS 'Partido: ', SUM(tab.satisfacion) as '% Satisfaccion:',
+		MAX(tab.notamax) * 0.1 as 'Nota maxima:', RANK() OVER (ORDER BY tab.id_party DESC) AS 'Ranking :'
+	FROM (
+		SELECT p.party_id AS id_party, c.canton_id as id_canton, 
+			COUNT( dq.qualification ) * 100 / @total_qualifications_satis as satisfacion,
+			MAX( dq.qualification ) as notamax
+		FROM DELIVERABLES_QUALIFICATIONS as dq
+		INNER JOIN DELIVERABLES as d ON dq.delivery_id = d.delivery_id
+		INNER JOIN CANTON as c ON dq.canton_id = c.canton_id
+		INNER JOIN CAMPAIGN_MANAGERS as cm ON d.author_id = cm.campain_manager_id
+		INNER JOIN PARTY as p ON cm.party_id = p.party_id
+		WHERE dq.qualification >= 60
+		AND dq.post_time BETWEEN @first_day AND @last_day
+		GROUP BY p.party_id, c.canton_id
+		EXCEPT
+		SELECT p.party_id AS id_party, c.canton_id as id_canton, 
+			COUNT( dq.qualification ) * 100 / @total_qualifications_satis as satisfacion,
+			MAX( dq.qualification ) as notamax
+		FROM DELIVERABLES_QUALIFICATIONS as dq
+		INNER JOIN DELIVERABLES as d ON dq.delivery_id = d.delivery_id
+		INNER JOIN CANTON as c ON dq.canton_id = c.canton_id
+		INNER JOIN CAMPAIGN_MANAGERS as cm ON d.author_id = cm.campain_manager_id
+		INNER JOIN PARTY as p ON cm.party_id = p.party_id
+		WHERE dq.qualification < 60
+		AND dq.post_time BETWEEN @first_day AND @last_day
+		GROUP BY p.party_id, c.canton_id
+		/*calificaciones x canton >= 60 que no tenga evaluaciones menores a 60 en el mismo canton*/
+	) as tab
+	GROUP BY tab.id_party
+	ORDER BY '% Satisfaccion:' DESC;
 END
 ;
 GO
